@@ -11,6 +11,7 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 
@@ -40,7 +41,7 @@ public class ProductListPageServletTest {
     }
 
     @Test
-    public void testDoGet_ShouldSetProductsAttributeAndForwardRequest() throws ServletException, IOException {
+    public void testDoGetShouldSetProductsAttributeAndForwardRequest() throws ServletException, IOException {
         servlet.doGet(request, response);
 
         verify(requestDispatcher).forward(request, response);
@@ -48,14 +49,14 @@ public class ProductListPageServletTest {
     }
 
     @Test
-    public void testDoGet_RedirectToCorrectPage() throws ServletException, IOException {
+    public void testDoGetRedirectToCorrectPage() throws ServletException, IOException {
         servlet.doGet(request, response);
 
         verify(request).getRequestDispatcher("/WEB-INF/pages/productList.jsp");
     }
 
     @Test
-    public void testInit_ShouldInitializeProductDao() throws ServletException, NoSuchFieldException, IllegalAccessException {
+    public void testInitShouldInitializeProductDao() throws NoSuchFieldException, IllegalAccessException {
         Field productDaoField = ProductListPageServlet.class.getDeclaredField("productDao");
         productDaoField.setAccessible(true);
 
