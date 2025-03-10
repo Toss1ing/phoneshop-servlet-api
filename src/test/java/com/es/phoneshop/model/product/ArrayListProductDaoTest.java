@@ -25,10 +25,10 @@ public class ArrayListProductDaoTest {
     public void setUp() {
         Currency usd = Currency.getInstance("USD");
         List<Product> initialProducts = new ArrayList<>(Arrays.asList(
-                new Product(1L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "url1"),
-                new Product(2L, "iphone", "Apple iPhone", new BigDecimal(200), usd, 10, "url2"),
-                new Product(3L, "sgs3", "Samsung Galaxy S III", new BigDecimal(200), usd, 0, "url3"),
-                new Product(4L, "iphone6", "Apple iPhone 6", null, usd, 20, "url4"))
+                new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "url1"),
+                new Product("iphone", "Apple iPhone", new BigDecimal(200), usd, 10, "url2"),
+                new Product("sgs3", "Samsung Galaxy S III", new BigDecimal(200), usd, 0, "url3"),
+                new Product("iphone6", "Apple iPhone 6", null, usd, 20, "url4"))
         );
         productDao = new ArrayListProductDao(initialProducts);
     }
@@ -72,7 +72,7 @@ public class ArrayListProductDaoTest {
         productDao.save(newProduct);
 
         assertNotNull(newProduct.getId());
-        assertEquals(Long.valueOf(5L), newProduct.getId());
+        assertEquals(Long.valueOf(4L), newProduct.getId());
         assertEquals(3, productDao.findProducts().size());
     }
 

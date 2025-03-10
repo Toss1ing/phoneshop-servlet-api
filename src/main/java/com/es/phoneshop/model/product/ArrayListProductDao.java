@@ -24,12 +24,9 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     public ArrayListProductDao(final List<Product> products) {
-        this.products = products;
-        this.idCounter = products.stream()
-                .mapToLong(Product::getId)
-                .max()
-                .orElse(-1L);
-        ++idCounter;
+        idCounter = 0L;
+        this.products = new ArrayList<>();
+        products.forEach(this::save);
     }
 
     @Override
