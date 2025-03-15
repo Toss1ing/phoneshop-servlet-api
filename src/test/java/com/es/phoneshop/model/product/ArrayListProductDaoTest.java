@@ -62,7 +62,7 @@ public class ArrayListProductDaoTest {
                         )
                 ),
                 new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 0,
-                        "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg",
+                        "url",
                         Arrays.asList(
                                 new Price(new BigDecimal(170), Date.valueOf(LocalDate.of(2023, 1, 10))),
                                 new Price(new BigDecimal(160), Date.valueOf(LocalDate.of(2023, 2, 14)))
