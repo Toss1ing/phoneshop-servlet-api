@@ -9,10 +9,45 @@
     <servlet-name>productList</servlet-name>
     <servlet-class>com.es.phoneshop.web.ProductListPageServlet</servlet-class>
   </servlet>
-  
   <servlet-mapping>
     <servlet-name>productList</servlet-name>
     <url-pattern>/products</url-pattern>
   </servlet-mapping>
+
+  <context-param>
+    <param-name>enableDemoDataListener</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <listener>
+    <listener-class>com.es.phoneshop.web.DemoDataServletContextListener</listener-class>
+  </listener>
+
+  <servlet>
+    <servlet-name>product</servlet-name>
+    <servlet-class>com.es.phoneshop.web.ProductDetailPageServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>product</servlet-name>
+    <url-pattern>/products/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>errorHandler</servlet-name>
+    <servlet-class>com.es.phoneshop.web.ErrorHandlerServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>errorHandler</servlet-name>
+    <url-pattern>/error-handler</url-pattern>
+  </servlet-mapping>
+
+  <error-page>
+    <exception-type>com.es.phoneshop.exception.ProductNotFoundException</exception-type>
+    <location>/error-handler</location>
+  </error-page>
+
+  <error-page>
+    <error-code>500</error-code>
+    <location>/error-handler</location>
+  </error-page>
 
 </web-app>

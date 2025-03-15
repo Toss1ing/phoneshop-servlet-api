@@ -1,24 +1,23 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.product.ProductDao;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Collections;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductListPageServletTest {
@@ -30,6 +29,8 @@ public class ProductListPageServletTest {
     @Mock
     private RequestDispatcher requestDispatcher;
     @Mock
+    private ProductDao productDao;
+    @Mock
     private ServletConfig config;
 
     private final ProductListPageServlet servlet = new ProductListPageServlet();
@@ -37,19 +38,36 @@ public class ProductListPageServletTest {
     @Before
     public void setup() throws ServletException {
         servlet.init(config);
+        servlet.productDao = productDao;
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
     }
 
     @Test
     public void testDoGetShouldSetProductsAttributeAndForwardRequest() throws ServletException, IOException {
+        String query = "test";
+        String sortField = "name";
+        String sortOrder = "asc";
+
+        when(request.getParameter("query")).thenReturn(query);
+        when(request.getParameter("sort")).thenReturn(sortField);
+        when(request.getParameter("order")).thenReturn(sortOrder);
+
+        when(productDao.findProducts(query, sortField, sortOrder)).thenReturn(Collections.emptyList());
+
         servlet.doGet(request, response);
 
-        verify(requestDispatcher).forward(request, response);
         verify(request).setAttribute(eq("products"), any());
+        verify(requestDispatcher).forward(request, response);
     }
 
     @Test
-    public void testDoGetRedirectToCorrectPage() throws ServletException, IOException {
+    public void testDoGetShouldForwardToProductListPage() throws ServletException, IOException {
+        when(request.getParameter("query")).thenReturn(null);
+        when(request.getParameter("sort")).thenReturn(null);
+        when(request.getParameter("order")).thenReturn(null);
+
+        when(productDao.findProducts(null, null, null)).thenReturn(Collections.emptyList());
+
         servlet.doGet(request, response);
 
         verify(request).getRequestDispatcher("/WEB-INF/pages/productList.jsp");
@@ -62,7 +80,8 @@ public class ProductListPageServletTest {
 
         Object productDaoValue = productDaoField.get(servlet);
 
-        assertNotNull(productDaoValue);
+        assertNotNull("ProductDao should be initialized", productDaoValue);
     }
 
 }
+
