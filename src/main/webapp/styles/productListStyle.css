@@ -1,0 +1,50 @@
+table {
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+.price-container {
+    position: relative;
+    cursor: pointer;
+}
+
+.tooltip {
+    display: none;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    width: 160px;
+    z-index: 10;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 5px;
+    white-space: nowrap;
+}
+
+.price-container:hover .tooltip {
+    display: block;
+}
+
+.tooltip ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.tooltip li {
+    font-size: 14px;
+    padding: 2px 0;
+}
+
+a, a:visited, a:link, a:active, a:hover, a:focus {
+    text-decoration: none !important;
+    color: inherit !important;
+}
