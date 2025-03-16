@@ -17,5 +17,12 @@
   <main>
     <jsp:doBody/>
   </main>
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 ExpertSoft!</p>
+      <nav>
+      </nav>
+    </div>
+  </footer>
 </body>
 </html>

@@ -3,6 +3,7 @@ package com.es.phoneshop.model.product;
 import com.es.phoneshop.exception.NullDataException;
 import com.es.phoneshop.exception.ProductExistException;
 import com.es.phoneshop.exception.ProductNotFoundException;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.util.*;
 import java.util.List;
@@ -47,14 +48,14 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> findProducts(final String query, String sortField, String sortOrder) {
+    public List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
         reentrantReadWriteLock.readLock().lock();
         try {
-            List<String> keywords = (query == null || query.isBlank())
+            List<String> keywords = (StringUtils.isBlank(query))
                     ? List.of()
                     : Arrays.asList(query.toLowerCase().split("\\s+"));
 
-            Comparator<Product> relevanceComparator = this.getRelevanceComparator(keywords, query);
+            Comparator<Product> relevanceComparator = this.getRelevanceComparator(keywords, sortField, sortOrder);
             Comparator<Product> productComparator = this.getProductComparator(sortField, sortOrder);
 
             return products.stream()
@@ -68,31 +69,36 @@ public class ArrayListProductDao implements ProductDao {
         }
     }
 
-    private Comparator<Product> getProductComparator(String sortField, String sortOrder) {
-        if (sortField == null) {
-            return (p1, p2) -> 0;
-        }
-
-        Comparator<Product> comparator = switch (sortField.toLowerCase()) {
-            case "price" -> Comparator.comparing(Product::getPrice, Comparator.nullsLast(Comparator.naturalOrder()));
-            case "description" ->
+    private Comparator<Product> getProductComparator(SortField sortField, SortOrder sortOrder) {
+        Comparator<Product> comparator = switch (sortField) {
+            case PRICE -> Comparator.comparing(Product::getPrice, Comparator.nullsLast(Comparator.naturalOrder()));
+            case DESCRIPTION ->
                     Comparator.comparing(Product::getDescription, Comparator.nullsLast(Comparator.naturalOrder()));
-            default -> (p1, p2) -> 0;
+            case NONE -> (p1, p2) -> 0;
         };
 
-        return "desc".equalsIgnoreCase(sortOrder) ? comparator.reversed() : comparator;
-    }
-
-    private Comparator<Product> getRelevanceComparator(List<String> keywords, String query) {
-        if (query != null) {
-            return (p1, p2) -> 0;
+        if (sortOrder == SortOrder.NONE) {
+            return comparator;
         }
 
-        return Comparator.comparingInt((Product product) ->
-                (int) keywords.stream()
-                        .filter(word -> product.getDescription().toLowerCase().contains(word))
-                        .count()
-        ).reversed();
+        return sortOrder == SortOrder.DESC ? comparator.reversed() : comparator;
+    }
+
+    private Comparator<Product> getRelevanceComparator(List<String> keywords, SortField sortField, SortOrder sortOrder) {
+        if (!sortField.equals(SortField.NONE) || !sortOrder.equals(SortOrder.NONE)) {
+            return (p1, p2) -> 0;
+        }
+        return Comparator
+                .comparingInt((Product product) ->
+                        (int) keywords.stream()
+                                .flatMap(word -> Arrays.stream(product.getDescription().toLowerCase().split("\\s+"))
+                                        .filter(descriptionWord -> descriptionWord.contains(word)))
+                                .count()
+                )
+                .reversed()
+                .thenComparingInt(product ->
+                        product.getDescription().split("\\s+").length
+                );
     }
 
     @Override

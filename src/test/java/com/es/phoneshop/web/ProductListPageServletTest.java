@@ -1,6 +1,8 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.model.product.SortField;
+import com.es.phoneshop.model.product.SortOrder;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -45,12 +47,12 @@ public class ProductListPageServletTest {
     @Test
     public void testDoGetShouldSetProductsAttributeAndForwardRequest() throws ServletException, IOException {
         String query = "test";
-        String sortField = "name";
-        String sortOrder = "asc";
+        SortField sortField = SortField.DESCRIPTION;
+        SortOrder sortOrder = SortOrder.ASC;
 
         when(request.getParameter("query")).thenReturn(query);
-        when(request.getParameter("sort")).thenReturn(sortField);
-        when(request.getParameter("order")).thenReturn(sortOrder);
+        when(request.getParameter("sort")).thenReturn(String.valueOf(sortField));
+        when(request.getParameter("order")).thenReturn(String.valueOf(sortOrder));
 
         when(productDao.findProducts(query, sortField, sortOrder)).thenReturn(Collections.emptyList());
 

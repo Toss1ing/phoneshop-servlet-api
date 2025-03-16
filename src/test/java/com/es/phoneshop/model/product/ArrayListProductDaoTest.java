@@ -53,7 +53,7 @@ public class ArrayListProductDaoTest {
                                 new Price(new BigDecimal(230), Date.valueOf(LocalDate.of(2023, 2, 5)))
                         )
                 ),
-                new Product("sgs3", "Samsung Galaxy S III", null, usd, 5,
+                new Product("sgs3", "Samsung Galaxy S I", null, usd, 5,
                         "url",
                         Arrays.asList(
                                 new Price(new BigDecimal(350), Date.valueOf(LocalDate.of(2023, 1, 10))),
@@ -100,7 +100,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProductsShouldReturnOnlyValidProducts() {
-        List<Product> result = productDao.findProducts(null, null, null);
+        List<Product> result = productDao.findProducts(null, SortField.NONE, SortOrder.NONE);
 
         assertNotNull(result);
         assertEquals(3, result.size());
@@ -125,7 +125,7 @@ public class ArrayListProductDaoTest {
 
         assertNotNull(newProduct.getId());
         assertEquals(Long.valueOf(5L), newProduct.getId());
-        assertEquals(4, productDao.findProducts(null, null, null).size());
+        assertEquals(4, productDao.findProducts(null, SortField.NONE, SortOrder.NONE).size());
     }
 
     @Test
@@ -140,7 +140,7 @@ public class ArrayListProductDaoTest {
         productDao.save(newProduct);
 
         assertEquals(Long.valueOf(5L), newProduct.getId());
-        assertEquals(4, productDao.findProducts(null, null, null).size());
+        assertEquals(4, productDao.findProducts(null, SortField.NONE, SortOrder.NONE).size());
     }
 
     @Test(expected = ProductExistException.class)
@@ -178,7 +178,7 @@ public class ArrayListProductDaoTest {
         latch.await();
         executor.shutdown();
 
-        assertEquals(13, productDao.findProducts(null, null, null).size());
+        assertEquals(13, productDao.findProducts(null, SortField.NONE, SortOrder.NONE).size());
     }
 
     @Test(expected = NullDataException.class)
@@ -199,7 +199,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSortProductsByPriceAsc() {
-        List<Product> products = productDao.findProducts(null, "price", "asc");
+        List<Product> products = productDao.findProducts(null, SortField.PRICE, SortOrder.ASC);
 
         assertNotNull(products);
         assertEquals(3, products.size());
@@ -209,17 +209,18 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSortProductsByPriceDesc() {
-        List<Product> products = productDao.findProducts(null, "price", "desc");
+        List<Product> products = productDao.findProducts(null, SortField.PRICE, SortOrder.DESC);
 
         assertNotNull(products);
         assertEquals(3, products.size());
+
         assertTrue(products.get(0).getPrice().compareTo(products.get(1).getPrice()) >= 0);
         assertTrue(products.get(1).getPrice().compareTo(products.get(2).getPrice()) >= 0);
     }
 
     @Test
     public void testSortProductsByDescriptionAsc() {
-        List<Product> products = productDao.findProducts(null, "description", "asc");
+        List<Product> products = productDao.findProducts(null, SortField.DESCRIPTION, SortOrder.ASC);
 
         assertNotNull(products);
         assertEquals(3, products.size());
@@ -229,7 +230,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSortProductsByDescriptionDesc() {
-        List<Product> products = productDao.findProducts(null, "description", "desc");
+        List<Product> products = productDao.findProducts(null, SortField.DESCRIPTION, SortOrder.DESC);
 
         assertNotNull(products);
         assertEquals(3, products.size());
@@ -247,7 +248,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSearchAndSortByPriceAsc() {
-        List<Product> result = productDao.findProducts("Samsung", "price", "asc");
+        List<Product> result = productDao.findProducts("Samsung", SortField.PRICE, SortOrder.ASC);
 
         assertNotNull(result);
         assertEquals(3, result.size());
@@ -260,7 +261,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSearchAndSortByPriceDesc() {
-        List<Product> result = productDao.findProducts("Samsung", "price", "desc");
+        List<Product> result = productDao.findProducts("Samsung", SortField.PRICE, SortOrder.DESC);
 
         assertNotNull(result);
         assertEquals(3, result.size());
@@ -273,7 +274,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSearchAndSortByDescriptionAsc() {
-        List<Product> result = productDao.findProducts("Galaxy", "description", "asc");
+        List<Product> result = productDao.findProducts("Galaxy", SortField.DESCRIPTION, SortOrder.ASC);
 
         assertNotNull(result);
         assertEquals(3, result.size());
@@ -286,7 +287,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSearchAndSortByDescriptionDesc() {
-        List<Product> result = productDao.findProducts("Galaxy", "description", "desc");
+        List<Product> result = productDao.findProducts("Galaxy", SortField.DESCRIPTION, SortOrder.DESC);
 
         assertNotNull(result);
         assertEquals(3, result.size());
@@ -299,7 +300,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSearchShouldReturnProductsContainingSearchQuery() {
-        List<Product> result = productDao.findProducts("I", null, null);
+        List<Product> result = productDao.findProducts("I", SortField.NONE, SortOrder.NONE);
 
         assertNotNull(result);
         assertEquals(2, result.size());
