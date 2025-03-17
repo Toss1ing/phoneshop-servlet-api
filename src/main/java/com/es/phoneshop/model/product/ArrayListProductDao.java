@@ -103,8 +103,8 @@ public class ArrayListProductDao implements ProductDao {
                             .count();
                     int totalWords = product.getDescription().split("\\s+").length;
                     return (double) matchedWords / totalWords;
-                }).reversed()
-                .thenComparingInt(product -> product.getDescription().split("\\s+").length);
+                })
+                .reversed();
     }
 
     @Override
