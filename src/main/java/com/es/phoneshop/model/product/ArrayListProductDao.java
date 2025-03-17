@@ -53,7 +53,7 @@ public class ArrayListProductDao implements ProductDao {
         try {
             List<String> keywords = (StringUtils.isBlank(query))
                     ? List.of()
-                    : Arrays.asList(query.toLowerCase().split("\\s+"));
+                    : Arrays.asList(query.trim().toLowerCase().split("\\s+"));
 
             Comparator<Product> relevanceComparator = this.getRelevanceComparator(keywords, sortField, sortOrder);
             Comparator<Product> productComparator = this.getProductComparator(sortField, sortOrder);
