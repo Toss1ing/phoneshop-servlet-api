@@ -96,13 +96,14 @@ public class ArrayListProductDao implements ProductDao {
                                         .anyMatch(descriptionWord -> descriptionWord.contains(word)))
                                 .count()
                 )
-                .thenComparingInt((Product product) ->
-                        (int) keywords.stream()
-                                .flatMap(word -> Arrays.stream(product.getDescription().toLowerCase().split("\\s+"))
-                                        .filter(descriptionWord -> descriptionWord.contains(word)))
-                                .count()
-                )
-                .reversed()
+                .thenComparingDouble((Product product) -> {
+                    long matchedWords = keywords.stream()
+                            .filter(word -> Arrays.stream(product.getDescription().toLowerCase().split("\\s+"))
+                                    .anyMatch(descriptionWord -> descriptionWord.contains(word)))
+                            .count();
+                    int totalWords = product.getDescription().split("\\s+").length;
+                    return (double) matchedWords / totalWords;
+                }).reversed()
                 .thenComparingInt(product -> product.getDescription().split("\\s+").length);
     }
 
