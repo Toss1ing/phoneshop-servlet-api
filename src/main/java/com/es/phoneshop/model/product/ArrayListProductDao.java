@@ -106,7 +106,6 @@ public class ArrayListProductDao implements ProductDao {
                 .thenComparingInt(product -> product.getDescription().split("\\s+").length);
     }
 
-
     @Override
     public void save(Product product) {
         reentrantReadWriteLock.writeLock().lock();
