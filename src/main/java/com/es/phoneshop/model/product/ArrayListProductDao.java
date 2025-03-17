@@ -88,18 +88,24 @@ public class ArrayListProductDao implements ProductDao {
         if (!sortField.equals(SortField.NONE) || !sortOrder.equals(SortOrder.NONE)) {
             return (p1, p2) -> 0;
         }
+
         return Comparator
                 .comparingInt((Product product) ->
+                        (int) keywords.stream()
+                                .filter(word -> Arrays.stream(product.getDescription().toLowerCase().split("\\s+"))
+                                        .anyMatch(descriptionWord -> descriptionWord.contains(word)))
+                                .count()
+                )
+                .thenComparingInt((Product product) ->
                         (int) keywords.stream()
                                 .flatMap(word -> Arrays.stream(product.getDescription().toLowerCase().split("\\s+"))
                                         .filter(descriptionWord -> descriptionWord.contains(word)))
                                 .count()
                 )
                 .reversed()
-                .thenComparingInt(product ->
-                        product.getDescription().split("\\s+").length
-                );
+                .thenComparingInt(product -> product.getDescription().split("\\s+").length);
     }
+
 
     @Override
     public void save(Product product) {
