@@ -1,8 +1,12 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model.product.implementation;
 
 import com.es.phoneshop.exception.NullDataException;
 import com.es.phoneshop.exception.ProductExistException;
 import com.es.phoneshop.exception.ProductNotFoundException;
+import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.product.dao.ProductDao;
+import com.es.phoneshop.model.product.numeration.SortField;
+import com.es.phoneshop.model.product.numeration.SortOrder;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.util.*;

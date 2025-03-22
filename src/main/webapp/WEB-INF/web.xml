@@ -46,6 +46,11 @@
   </error-page>
 
   <error-page>
+    <exception-type>com.es.phoneshop.exception.OutOfStockException</exception-type>
+    <location>/error-handler</location>
+  </error-page>
+
+  <error-page>
     <error-code>500</error-code>
     <location>/error-handler</location>
   </error-page>

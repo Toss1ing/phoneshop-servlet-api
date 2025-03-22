@@ -3,6 +3,10 @@ package com.es.phoneshop.model.product;
 import com.es.phoneshop.exception.NullDataException;
 import com.es.phoneshop.exception.ProductExistException;
 import com.es.phoneshop.exception.ProductNotFoundException;
+import com.es.phoneshop.model.product.dao.ProductDao;
+import com.es.phoneshop.model.product.implementation.ArrayListProductDao;
+import com.es.phoneshop.model.product.numeration.SortField;
+import com.es.phoneshop.model.product.numeration.SortOrder;
 import org.junit.Before;
 import org.junit.Test;
 
