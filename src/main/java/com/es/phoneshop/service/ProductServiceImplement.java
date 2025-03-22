@@ -1,12 +1,11 @@
-package com.es.phoneshop.model.product.implementation;
+package com.es.phoneshop.service;
 
 import com.es.phoneshop.exception.NullDataException;
 import com.es.phoneshop.exception.ProductExistException;
 import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.dao.ProductDao;
-import com.es.phoneshop.model.product.numeration.SortField;
-import com.es.phoneshop.model.product.numeration.SortOrder;
+import com.es.phoneshop.model.product.sort.SortField;
+import com.es.phoneshop.model.product.sort.SortOrder;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.util.*;
@@ -14,21 +13,21 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-public class ArrayListProductDao implements ProductDao {
+public class ProductServiceImplement implements ProductService {
 
-    private static ArrayListProductDao instance;
+    private static ProductServiceImplement instance;
     private final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
     private Long idCounter;
     private final List<Product> products;
 
-    private ArrayListProductDao() {
+    private ProductServiceImplement() {
         idCounter = 0L;
         products = new ArrayList<>();
     }
 
-    public static synchronized ArrayListProductDao getInstance() {
+    public static synchronized ProductServiceImplement getInstance() {
         if (instance == null) {
-            instance = new ArrayListProductDao();
+            instance = new ProductServiceImplement();
         }
         return instance;
     }

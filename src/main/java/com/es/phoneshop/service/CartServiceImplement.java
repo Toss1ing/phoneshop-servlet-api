@@ -1,31 +1,29 @@
-package com.es.phoneshop.model.product.implementation;
+package com.es.phoneshop.service;
 
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.SessionLockManager;
-import com.es.phoneshop.model.product.cart.Cart;
-import com.es.phoneshop.model.product.cart.CartItem;
-import com.es.phoneshop.model.product.dao.CartDao;
-import com.es.phoneshop.model.product.dao.ProductDao;
+import com.es.phoneshop.utility.SessionLockManager;
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.CartItem;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.concurrent.locks.Lock;
 
-public class CartProductDao implements CartDao {
+public class CartServiceImplement implements CartService {
 
-    private static final String SESSION_ATTRIBUTE = CartProductDao.class.getName() + ".cart";
-    private static CartProductDao INSTANCE;
-    private final ProductDao productDao;
+    private static final String SESSION_ATTRIBUTE = CartServiceImplement.class.getName() + ".cart";
+    private static CartServiceImplement INSTANCE;
+    private final ProductService productService;
 
-    public static CartProductDao getInstance() {
+    public static CartServiceImplement getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new CartProductDao();
+            INSTANCE = new CartServiceImplement();
         }
         return INSTANCE;
     }
 
-    private CartProductDao() {
-        productDao = ArrayListProductDao.getInstance();
+    private CartServiceImplement() {
+        productService = ProductServiceImplement.getInstance();
     }
 
     @Override
@@ -58,7 +56,7 @@ public class CartProductDao implements CartDao {
                 session.setAttribute(SESSION_ATTRIBUTE, cart);
             }
 
-            Product product = productDao.getProduct(productId);
+            Product product = productService.getProduct(productId);
 
             boolean productExistsInCart = cart.getItems().stream()
                     .anyMatch(cartItem -> cartItem.getProduct().getId().equals(productId));

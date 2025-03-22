@@ -1,4 +1,4 @@
-package com.es.phoneshop.model.product.numeration;
+package com.es.phoneshop.model.product.sort;
 
 public enum SortField {
     NONE,

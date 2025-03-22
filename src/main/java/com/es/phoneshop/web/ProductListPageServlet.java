@@ -1,10 +1,10 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.implementation.ArrayListProductDao;
+import com.es.phoneshop.service.ProductService;
+import com.es.phoneshop.service.ProductServiceImplement;
 
-import com.es.phoneshop.model.product.dao.ProductDao;
-import com.es.phoneshop.model.product.numeration.SortField;
-import com.es.phoneshop.model.product.numeration.SortOrder;
+import com.es.phoneshop.model.product.sort.SortField;
+import com.es.phoneshop.model.product.sort.SortOrder;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -16,12 +16,12 @@ import java.io.IOException;
 
 public class ProductListPageServlet extends HttpServlet {
 
-    protected ProductDao productDao;
+    protected ProductService productService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        productDao = ArrayListProductDao.getInstance();
+        productService = ProductServiceImplement.getInstance();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class ProductListPageServlet extends HttpServlet {
                 ? SortOrder.NONE
                 : SortOrder.valueOf(sortOrderStr.toUpperCase());
 
-        request.setAttribute("products", productDao.findProducts(query, sortField, sortOrder));
+        request.setAttribute("products", productService.findProducts(query, sortField, sortOrder));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 

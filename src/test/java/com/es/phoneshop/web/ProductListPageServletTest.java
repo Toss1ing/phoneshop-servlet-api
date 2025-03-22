@@ -1,8 +1,8 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.dao.ProductDao;
-import com.es.phoneshop.model.product.numeration.SortField;
-import com.es.phoneshop.model.product.numeration.SortOrder;
+import com.es.phoneshop.model.product.sort.SortField;
+import com.es.phoneshop.model.product.sort.SortOrder;
+import com.es.phoneshop.service.ProductService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -31,7 +31,7 @@ public class ProductListPageServletTest {
     @Mock
     private RequestDispatcher requestDispatcher;
     @Mock
-    private ProductDao productDao;
+    private ProductService productService;
     @Mock
     private ServletConfig config;
 
@@ -40,7 +40,7 @@ public class ProductListPageServletTest {
     @Before
     public void setup() throws ServletException {
         servlet.init(config);
-        servlet.productDao = productDao;
+        servlet.productService = productService;
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
     }
 
@@ -54,7 +54,7 @@ public class ProductListPageServletTest {
         when(request.getParameter("sort")).thenReturn(String.valueOf(sortField));
         when(request.getParameter("order")).thenReturn(String.valueOf(sortOrder));
 
-        when(productDao.findProducts(query, sortField, sortOrder)).thenReturn(Collections.emptyList());
+        when(productService.findProducts(query, sortField, sortOrder)).thenReturn(Collections.emptyList());
 
         servlet.doGet(request, response);
 
@@ -68,7 +68,7 @@ public class ProductListPageServletTest {
         when(request.getParameter("sort")).thenReturn(null);
         when(request.getParameter("order")).thenReturn(null);
 
-        when(productDao.findProducts(null, null, null)).thenReturn(Collections.emptyList());
+        when(productService.findProducts(null, null, null)).thenReturn(Collections.emptyList());
 
         servlet.doGet(request, response);
 
@@ -77,12 +77,12 @@ public class ProductListPageServletTest {
 
     @Test
     public void testInitShouldInitializeProductDao() throws NoSuchFieldException, IllegalAccessException {
-        Field productDaoField = ProductListPageServlet.class.getDeclaredField("productDao");
-        productDaoField.setAccessible(true);
+        Field productServiceField = ProductListPageServlet.class.getDeclaredField("productService");
+        productServiceField.setAccessible(true);
 
-        Object productDaoValue = productDaoField.get(servlet);
+        Object productServiceValue = productServiceField.get(servlet);
 
-        assertNotNull("ProductDao should be initialized", productDaoValue);
+        assertNotNull("ProductDao should be initialized", productServiceValue);
     }
 
 }

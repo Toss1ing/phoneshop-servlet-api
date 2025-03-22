@@ -62,7 +62,7 @@
                 </td>
                 <td>
                     <label>
-                        <input name="quantity" value="${not empty param.error ? quantity : '1'}" class="quantity">
+                        <input name="quantity" value="${not empty sessionScope.quantity ? sessionScope.quantity : '1'}" class="quantity">
                         <c:if test="${not empty param.error}">
                             <div class="error">
                                 ${param.error}

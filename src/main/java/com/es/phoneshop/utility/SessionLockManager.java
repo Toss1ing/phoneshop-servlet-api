@@ -1,4 +1,4 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.utility;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;

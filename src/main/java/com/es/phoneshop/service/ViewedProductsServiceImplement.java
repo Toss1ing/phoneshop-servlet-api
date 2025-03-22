@@ -1,5 +1,7 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.service;
 
+import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.utility.SessionLockManager;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.ArrayList;
@@ -7,10 +9,11 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
-public class ViewedProductsService {
-    private static final String SESSION_ATTRIBUTE = ViewedProductsService.class.getName() + ".viewedProducts";
+public class ViewedProductsServiceImplement implements ViewedProductsService {
+    private static final String SESSION_ATTRIBUTE = ViewedProductsServiceImplement.class.getName() + ".viewedProducts";
     private static final int MAX_VIEWED_PRODUCTS = 3;
 
+    @Override
     public void addViewedProduct(HttpSession session, Product product) {
         Lock sessionLock = SessionLockManager.getSessionLock(session);
         sessionLock.lock();
@@ -35,7 +38,7 @@ public class ViewedProductsService {
         }
     }
 
-
+    @Override
     public List<Product> getLastViewedProducts(HttpSession session) {
         Lock sessionLock = SessionLockManager.getSessionLock(session);
         sessionLock.lock();
@@ -52,4 +55,5 @@ public class ViewedProductsService {
             sessionLock.unlock();
         }
     }
+
 }
