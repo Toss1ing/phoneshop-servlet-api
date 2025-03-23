@@ -13,7 +13,7 @@ public class CartServiceImplement implements CartService {
 
     private static final String SESSION_ATTRIBUTE = CartServiceImplement.class.getName() + ".cart";
     private static CartServiceImplement INSTANCE;
-    private final ProductService productService;
+    protected ProductService productService;
 
     public static CartServiceImplement getInstance() {
         if (INSTANCE == null) {
