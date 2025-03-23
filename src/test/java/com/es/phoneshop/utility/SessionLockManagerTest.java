@@ -15,7 +15,6 @@ public class SessionLockManagerTest {
 
     @Mock
     private HttpSession session1;
-
     @Mock
     private HttpSession session2;
 
@@ -27,7 +26,7 @@ public class SessionLockManagerTest {
     }
 
     @Test
-    public void testGetSessionLock_ReturnsSameLockForSameSession() {
+    public void testGetSessionLockReturnsSameLockForSameSession() {
         Lock lock1 = SessionLockManager.getSessionLock(session1);
         Lock lock2 = SessionLockManager.getSessionLock(session1);
 
@@ -37,7 +36,7 @@ public class SessionLockManagerTest {
     }
 
     @Test
-    public void testGetSessionLock_ReturnsDifferentLocksForDifferentSessions() {
+    public void testGetSessionLockReturnsDifferentLocksForDifferentSessions() {
         Lock lock1 = SessionLockManager.getSessionLock(session1);
         Lock lock2 = SessionLockManager.getSessionLock(session2);
 

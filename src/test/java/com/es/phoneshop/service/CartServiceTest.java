@@ -82,7 +82,7 @@ public class CartServiceTest {
     }
 
     @Test(expected = OutOfStockException.class)
-    public void testAddProductToCart_ShouldThrowOutOfStockExceptionWhenNotEnoughStock() {
+    public void testAddProductToCartShouldThrowOutOfStockExceptionWhenNotEnoughStock() {
         Long productId = 1L;
         int quantity = 10;
 
@@ -118,9 +118,6 @@ public class CartServiceTest {
         assertEquals("Product ID should be the same as the one in the cart", productId, result.getItems().get(0).getProduct().getId());
     }
 
-
-
-
     @Test(expected = OutOfStockException.class)
     public void testAddProductToCartShouldThrowOutOfStockExceptionWhenExceedStock() {
         Long productId = 0L;
@@ -140,7 +137,7 @@ public class CartServiceTest {
     }
 
     @Test
-    public void testAddProductToCart_ShouldNotAddProductIfAlreadyInCartAndStockIsSufficient() {
+    public void testAddProductToCartShouldNotAddProductIfAlreadyInCartAndStockIsSufficient() {
         Long productId = 0L;
         int initialQuantity = 2;
         int additionalQuantity = 3;
@@ -160,7 +157,7 @@ public class CartServiceTest {
     }
 
     @Test
-    public void testAddProductToCart_ShouldAddProductIfNotInCartAndStockIsSufficient() {
+    public void testAddProductToCartShouldAddProductIfNotInCartAndStockIsSufficient() {
         Long productId = 1L;
         int quantity = 2;
 
