@@ -34,7 +34,7 @@ public class ViewedProductsServiceTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        viewedProductsService = new ViewedProductsServiceImplement();
+        viewedProductsService = ViewedProductsServiceImplement.getInstance();
 
         Mockito.when(product1.getCode()).thenReturn("sgs");
         Mockito.when(product2.getCode()).thenReturn("simc56");

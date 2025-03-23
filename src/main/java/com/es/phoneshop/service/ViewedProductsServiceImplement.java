@@ -6,12 +6,23 @@ import jakarta.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 public class ViewedProductsServiceImplement implements ViewedProductsService {
+    private static ViewedProductsServiceImplement instance;
     private static final String SESSION_ATTRIBUTE = ViewedProductsServiceImplement.class.getName() + ".viewedProducts";
     private static final int MAX_VIEWED_PRODUCTS = 3;
+
+    private ViewedProductsServiceImplement() {}
+
+    public static synchronized ViewedProductsServiceImplement getInstance() {
+        if (instance == null) {
+            instance = new ViewedProductsServiceImplement();
+        }
+        return instance;
+    }
 
     @Override
     public void addViewedProduct(HttpSession session, Product product) {
@@ -44,13 +55,8 @@ public class ViewedProductsServiceImplement implements ViewedProductsService {
         sessionLock.lock();
 
         try {
-            List<Product> viewedProducts = (List<Product>) session.getAttribute(SESSION_ATTRIBUTE);
-
-            if (viewedProducts == null) {
-                return new ArrayList<>();
-            }
-
-            return new ArrayList<>(viewedProducts);
+            return Optional.ofNullable((List<Product>) session.getAttribute(SESSION_ATTRIBUTE))
+                    .orElseGet(ArrayList::new);
         } finally {
             sessionLock.unlock();
         }

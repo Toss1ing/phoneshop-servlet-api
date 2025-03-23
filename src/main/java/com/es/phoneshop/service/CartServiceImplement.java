@@ -1,6 +1,7 @@
 package com.es.phoneshop.service;
 
 import com.es.phoneshop.exception.OutOfStockException;
+import com.es.phoneshop.exception.ValidationException;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.utility.SessionLockManager;
 import com.es.phoneshop.model.cart.Cart;
@@ -49,8 +50,11 @@ public class CartServiceImplement implements CartService {
         sessionLock.lock();
 
         try {
-            Cart cart = (Cart) session.getAttribute(SESSION_ATTRIBUTE);
+            if (quantity <= 0) {
+                throw new ValidationException("Quantity must be greater than 0");
+            }
 
+            Cart cart = (Cart) session.getAttribute(SESSION_ATTRIBUTE);
             if (cart == null) {
                 cart = new Cart();
                 session.setAttribute(SESSION_ATTRIBUTE, cart);
@@ -58,31 +62,28 @@ public class CartServiceImplement implements CartService {
 
             Product product = productService.getProduct(productId);
 
-            boolean productExistsInCart = cart.getItems().stream()
-                    .anyMatch(cartItem -> cartItem.getProduct().getId().equals(productId));
+            CartItem cartItem = cart.getItems().stream()
+                    .filter(item -> item.getProduct().getId().equals(productId))
+                    .findFirst()
+                    .orElse(null);
 
-            if (productExistsInCart) {
-                cart.getItems().stream()
-                        .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
-                        .findFirst()
-                        .ifPresent(existingCartItem -> {
-                            int newQuantity = existingCartItem.getQuantity() + quantity;
-
-                            if (product.getStock() < newQuantity) {
-                                throw new OutOfStockException(product, newQuantity, product.getStock());
-                            }
-
-                            existingCartItem.setQuantity(newQuantity);
-                        });
+            if (cartItem != null) {
+                int newQuantity = cartItem.getQuantity() + quantity;
+                validateStock(product, newQuantity);
+                cartItem.setQuantity(newQuantity);
             } else {
-                if (product.getStock() < quantity) {
-                    throw new OutOfStockException(product, quantity, product.getStock());
-                }
+                validateStock(product, quantity);
                 cart.getItems().add(new CartItem(product, quantity));
             }
 
         } finally {
             sessionLock.unlock();
+        }
+    }
+
+    private void validateStock(Product product, int quantity) {
+        if (product.getStock() < quantity) {
+            throw new OutOfStockException(product.getStock());
         }
     }
 

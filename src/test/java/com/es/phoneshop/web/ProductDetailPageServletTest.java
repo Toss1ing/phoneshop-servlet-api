@@ -110,7 +110,7 @@ public class ProductDetailPageServletTest {
     public void testDoPostOutOfStockShouldRedirectWithError() throws ServletException, IOException {
         when(request.getParameter("quantity")).thenReturn("10");
         when(request.getLocale()).thenReturn(Locale.US);
-        doThrow(new OutOfStockException(product, 10, 5)).when(cartService).add(session, 1L, 10);
+        doThrow(new OutOfStockException(5)).when(cartService).add(session, 1L, 10);
 
         servlet.doPost(request, response);
 

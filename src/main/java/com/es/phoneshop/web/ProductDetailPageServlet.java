@@ -1,12 +1,9 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.exception.OutOfStockException;
-import com.es.phoneshop.service.ProductServiceImplement;
+import com.es.phoneshop.exception.ValidationException;
+import com.es.phoneshop.service.*;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.service.ViewedProductsServiceImplement;
-import com.es.phoneshop.service.CartService;
-import com.es.phoneshop.service.CartServiceImplement;
-import com.es.phoneshop.service.ProductService;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -22,14 +19,14 @@ public class ProductDetailPageServlet extends HttpServlet {
 
     protected ProductService productService;
     protected CartService cartService;
-    protected ViewedProductsServiceImplement viewedProductsService;
+    protected ViewedProductsService viewedProductsService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         productService = ProductServiceImplement.getInstance();
         cartService = CartServiceImplement.getInstance();
-        viewedProductsService = new ViewedProductsServiceImplement();
+        viewedProductsService = ViewedProductsServiceImplement.getInstance();
     }
 
     @Override
@@ -47,8 +44,8 @@ public class ProductDetailPageServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String quantityStr = request.getParameter("quantity");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String quantityStr = request.getParameter("quantity").trim();
         Long productId = parseProductId(request);
         request.getSession().setAttribute("quantity", quantityStr);
 
@@ -66,9 +63,10 @@ public class ProductDetailPageServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/products/" + productId + "?success=Product added to cart");
         } catch (OutOfStockException ex) {
             response.sendRedirect(request.getContextPath() + "/products/" + productId + "?error=Out of stock available " + ex.getStockAvailable());
+        } catch (ValidationException ex) {
+            response.sendRedirect(request.getContextPath() + "/products/" + productId + "?error=" + ex.getMessage());
         }
     }
-
 
     protected Long parseProductId(HttpServletRequest request) {
         String productId = request.getPathInfo().substring(1);
