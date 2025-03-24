@@ -49,6 +49,11 @@ public class ProductDetailPageServlet extends HttpServlet {
         Long productId = parseProductId(request);
         request.getSession().setAttribute("quantity", quantityStr);
 
+        if (!quantityStr.matches("[\\d.,]+")) {
+            response.sendRedirect(request.getContextPath() + "/products/" + parseProductId(request) + "?error=Invalid quantity: " + quantityStr);
+            return;
+        }
+
         int quantity;
         try {
             NumberFormat format = NumberFormat.getInstance(request.getLocale());
