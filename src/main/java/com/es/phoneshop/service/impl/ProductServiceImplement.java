@@ -1,4 +1,4 @@
-package com.es.phoneshop.service;
+package com.es.phoneshop.service.impl;
 
 import com.es.phoneshop.exception.NullDataException;
 import com.es.phoneshop.exception.ProductExistException;
@@ -6,6 +6,7 @@ import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.sort.SortField;
 import com.es.phoneshop.model.product.sort.SortOrder;
+import com.es.phoneshop.service.ProductService;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.util.*;

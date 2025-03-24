@@ -1,7 +1,7 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.service.ProductService;
-import com.es.phoneshop.service.ProductServiceImplement;
+import com.es.phoneshop.service.impl.ProductServiceImplement;
 import com.es.phoneshop.model.product.Price;
 import com.es.phoneshop.model.product.Product;
 import jakarta.servlet.ServletContextEvent;

@@ -1,9 +1,10 @@
-package com.es.phoneshop.service;
+package com.es.phoneshop.service.impl;
 
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartItem;
 import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import org.junit.Before;
 import org.junit.Test;

@@ -4,6 +4,9 @@ import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.exception.ValidationException;
 import com.es.phoneshop.service.*;
 import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.service.impl.CartServiceImplement;
+import com.es.phoneshop.service.impl.ProductServiceImplement;
+import com.es.phoneshop.service.impl.ViewedProductsServiceImplement;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -39,7 +42,7 @@ public class ProductDetailPageServlet extends HttpServlet {
 
         request.setAttribute("product", product);
         request.setAttribute("cart", cartService.getCart(session));
-        request.setAttribute("viewedProducts", viewedProductsService.getLastViewedProducts(session));
+        session.setAttribute("viewedProducts", viewedProductsService.getLastViewedProducts(session));
         request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
     }
 

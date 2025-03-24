@@ -4,7 +4,7 @@ import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.CartService;
 import com.es.phoneshop.service.ProductService;
-import com.es.phoneshop.service.ViewedProductsServiceImplement;
+import com.es.phoneshop.service.impl.ViewedProductsServiceImplement;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;

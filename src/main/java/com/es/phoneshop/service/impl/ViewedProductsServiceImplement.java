@@ -1,6 +1,7 @@
-package com.es.phoneshop.service;
+package com.es.phoneshop.service.impl;
 
 import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.service.ViewedProductsService;
 import com.es.phoneshop.utility.SessionLockManager;
 import jakarta.servlet.http.HttpSession;
 
@@ -15,7 +16,8 @@ public class ViewedProductsServiceImplement implements ViewedProductsService {
     private static final String SESSION_ATTRIBUTE = ViewedProductsServiceImplement.class.getName() + ".viewedProducts";
     private static final int MAX_VIEWED_PRODUCTS = 3;
 
-    private ViewedProductsServiceImplement() {}
+    private ViewedProductsServiceImplement() {
+    }
 
     public static synchronized ViewedProductsServiceImplement getInstance() {
         if (instance == null) {

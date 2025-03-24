@@ -1,8 +1,10 @@
-package com.es.phoneshop.service;
+package com.es.phoneshop.service.impl;
 
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.exception.ValidationException;
 import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.service.CartService;
+import com.es.phoneshop.service.ProductService;
 import com.es.phoneshop.utility.SessionLockManager;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartItem;
@@ -36,7 +38,7 @@ public class CartServiceImplement implements CartService {
             Cart cart = (Cart) session.getAttribute(SESSION_ATTRIBUTE);
 
             if (cart == null) {
-                session.setAttribute(SESSION_ATTRIBUTE, new Cart());
+                session.setAttribute(SESSION_ATTRIBUTE, cart = new Cart());
             }
             return cart;
         } finally {

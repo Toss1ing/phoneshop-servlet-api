@@ -1,4 +1,4 @@
-package com.es.phoneshop.service;
+package com.es.phoneshop.service.impl;
 
 import com.es.phoneshop.model.product.Product;
 import jakarta.servlet.http.HttpSession;

@@ -63,7 +63,9 @@
     </c:forEach>
     </tbody>
   </table>
+
   <tags:recentlyViewedProducts viewedProducts="${viewedProducts}" />
+
   <link rel="stylesheet" href="${pageContext.servletContext.contextPath}/styles/productListStyle.css">
 
 </tags:master>
