@@ -1,9 +1,9 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.service.ProductService;
+import com.es.phoneshop.service.impl.ProductServiceImplement;
 import com.es.phoneshop.model.product.Price;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
@@ -16,17 +16,17 @@ import java.util.Currency;
 import java.util.List;
 
 public class DemoDataServletContextListener implements ServletContextListener {
-    private final ProductDao productDao;
+    private final ProductService productService;
 
     public DemoDataServletContextListener() {
-        this.productDao = ArrayListProductDao.getInstance();
+        this.productService = ProductServiceImplement.getInstance();
     }
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         boolean insertDemoData = Boolean.parseBoolean(sce.getServletContext().getInitParameter("enableDemoDataListener"));
         if (insertDemoData) {
-            loadProducts().forEach(productDao::save);
+            loadProducts().forEach(productService::save);
         }
     }
 

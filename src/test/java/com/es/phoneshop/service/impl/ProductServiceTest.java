@@ -1,8 +1,13 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.service.impl;
 
 import com.es.phoneshop.exception.NullDataException;
 import com.es.phoneshop.exception.ProductExistException;
 import com.es.phoneshop.exception.ProductNotFoundException;
+import com.es.phoneshop.model.product.Price;
+import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.product.sort.SortField;
+import com.es.phoneshop.model.product.sort.SortOrder;
+import com.es.phoneshop.service.ProductService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,16 +24,16 @@ import java.util.concurrent.Executors;
 
 import static org.junit.Assert.*;
 
-public class ArrayListProductDaoTest {
+public class ProductServiceTest {
 
-    private ProductDao productDao;
+    private ProductService productService;
 
     @Before
     public void setUp() throws NoSuchFieldException, IllegalAccessException {
 
         ResetSingleton();
 
-        productDao = ArrayListProductDao.getInstance();
+        productService = ProductServiceImplement.getInstance();
 
         Currency usd = Currency.getInstance("USD");
         List<Product> initialProducts = new ArrayList<>(Arrays.asList(
@@ -70,29 +75,29 @@ public class ArrayListProductDaoTest {
                 )
         ));
 
-        initialProducts.forEach(product -> productDao.save(product));
+        initialProducts.forEach(product -> productService.save(product));
     }
 
     private void ResetSingleton() throws IllegalAccessException, NoSuchFieldException {
-        java.lang.reflect.Field instanceField = ArrayListProductDao.class.getDeclaredField("instance");
+        java.lang.reflect.Field instanceField = ProductServiceImplement.class.getDeclaredField("instance");
         instanceField.setAccessible(true);
         instanceField.set(null, null);
     }
 
     @Test(expected = NullDataException.class)
     public void testGetProductShouldThrowNullDataExceptionWhenIdIsNull() {
-        productDao.getProduct(null);
+        productService.getProduct(null);
     }
 
     @Test(expected = ProductNotFoundException.class)
     public void testGetProductShouldThrowProductNotFoundExceptionWhenProductNotFound() {
         Long nonExistentId = 5L;
-        productDao.getProduct(nonExistentId);
+        productService.getProduct(nonExistentId);
     }
 
     @Test
     public void testGetProductShouldReturnProductWhenProductExists() {
-        Product result = productDao.getProduct(1L);
+        Product result = productService.getProduct(1L);
 
         assertNotNull(result);
         assertEquals(Long.valueOf(1L), result.getId());
@@ -100,7 +105,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProductsShouldReturnOnlyValidProducts() {
-        List<Product> result = productDao.findProducts(null, SortField.NONE, SortOrder.NONE);
+        List<Product> result = productService.findProducts(null, SortField.NONE, SortOrder.NONE);
 
         assertNotNull(result);
         assertEquals(3, result.size());
@@ -108,7 +113,7 @@ public class ArrayListProductDaoTest {
 
     @Test(expected = NullDataException.class)
     public void testSaveShouldThrowNullDataExceptionWhenProductIsNull() {
-        productDao.save(null);
+        productService.save(null);
     }
 
     @Test
@@ -121,11 +126,11 @@ public class ArrayListProductDaoTest {
                         new Price(new BigDecimal(80), Date.valueOf(LocalDate.of(2023, 2, 25)))
                 )
         );
-        productDao.save(newProduct);
+        productService.save(newProduct);
 
         assertNotNull(newProduct.getId());
         assertEquals(Long.valueOf(5L), newProduct.getId());
-        assertEquals(4, productDao.findProducts(null, SortField.NONE, SortOrder.NONE).size());
+        assertEquals(4, productService.findProducts(null, SortField.NONE, SortOrder.NONE).size());
     }
 
     @Test
@@ -137,10 +142,10 @@ public class ArrayListProductDaoTest {
                         new Price(new BigDecimal(160), Date.valueOf(LocalDate.of(2023, 2, 14)))
                 )
         );
-        productDao.save(newProduct);
+        productService.save(newProduct);
 
         assertEquals(Long.valueOf(5L), newProduct.getId());
-        assertEquals(4, productDao.findProducts(null, SortField.NONE, SortOrder.NONE).size());
+        assertEquals(4, productService.findProducts(null, SortField.NONE, SortOrder.NONE).size());
     }
 
     @Test(expected = ProductExistException.class)
@@ -152,7 +157,7 @@ public class ArrayListProductDaoTest {
                         new Price(new BigDecimal(160), Date.valueOf(LocalDate.of(2023, 2, 14)))
                 )
         );
-        productDao.save(duplicateProduct);
+        productService.save(duplicateProduct);
     }
 
     @Test
@@ -170,7 +175,7 @@ public class ArrayListProductDaoTest {
                                 new Price(new BigDecimal(160), Date.valueOf(LocalDate.of(2023, 2, 14)))
                         )
                 );
-                productDao.save(product);
+                productService.save(product);
                 latch.countDown();
             });
         }
@@ -178,28 +183,28 @@ public class ArrayListProductDaoTest {
         latch.await();
         executor.shutdown();
 
-        assertEquals(13, productDao.findProducts(null, SortField.NONE, SortOrder.NONE).size());
+        assertEquals(13, productService.findProducts(null, SortField.NONE, SortOrder.NONE).size());
     }
 
     @Test(expected = NullDataException.class)
     public void testDeleteShouldThrowNullDataExceptionWhenIdIsNull() {
-        productDao.delete(null);
+        productService.delete(null);
     }
 
     @Test(expected = ProductNotFoundException.class)
     public void testDeleteShouldThrowProductNotFoundExceptionWhenProductNotFound() {
-        productDao.delete(10L);
+        productService.delete(10L);
     }
 
     @Test(expected = ProductNotFoundException.class)
     public void testDeleteShouldSuccessfullyRemoveProductWhenProductExists() {
-        productDao.delete(1L);
-        productDao.getProduct(1L);
+        productService.delete(1L);
+        productService.getProduct(1L);
     }
 
     @Test
     public void testSortProductsByPriceAsc() {
-        List<Product> products = productDao.findProducts(null, SortField.PRICE, SortOrder.ASC);
+        List<Product> products = productService.findProducts(null, SortField.PRICE, SortOrder.ASC);
 
         assertNotNull(products);
         assertEquals(3, products.size());
@@ -209,7 +214,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSortProductsByPriceDesc() {
-        List<Product> products = productDao.findProducts(null, SortField.PRICE, SortOrder.DESC);
+        List<Product> products = productService.findProducts(null, SortField.PRICE, SortOrder.DESC);
 
         assertNotNull(products);
         assertEquals(3, products.size());
@@ -220,7 +225,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSortProductsByDescriptionAsc() {
-        List<Product> products = productDao.findProducts(null, SortField.DESCRIPTION, SortOrder.ASC);
+        List<Product> products = productService.findProducts(null, SortField.DESCRIPTION, SortOrder.ASC);
 
         assertNotNull(products);
         assertEquals(3, products.size());
@@ -230,7 +235,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSortProductsByDescriptionDesc() {
-        List<Product> products = productDao.findProducts(null, SortField.DESCRIPTION, SortOrder.DESC);
+        List<Product> products = productService.findProducts(null, SortField.DESCRIPTION, SortOrder.DESC);
 
         assertNotNull(products);
         assertEquals(3, products.size());
@@ -240,15 +245,15 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSingletonInstance() {
-        ArrayListProductDao instance1 = ArrayListProductDao.getInstance();
-        ArrayListProductDao instance2 = ArrayListProductDao.getInstance();
+        ProductServiceImplement instance1 = ProductServiceImplement.getInstance();
+        ProductServiceImplement instance2 = ProductServiceImplement.getInstance();
 
         assertSame(instance1, instance2);
     }
 
     @Test
     public void testSearchAndSortByPriceAsc() {
-        List<Product> result = productDao.findProducts("Samsung", SortField.PRICE, SortOrder.ASC);
+        List<Product> result = productService.findProducts("Samsung", SortField.PRICE, SortOrder.ASC);
 
         assertNotNull(result);
         assertEquals(3, result.size());
@@ -261,7 +266,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSearchAndSortByPriceDesc() {
-        List<Product> result = productDao.findProducts("Samsung", SortField.PRICE, SortOrder.DESC);
+        List<Product> result = productService.findProducts("Samsung", SortField.PRICE, SortOrder.DESC);
 
         assertNotNull(result);
         assertEquals(3, result.size());
@@ -274,7 +279,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSearchAndSortByDescriptionAsc() {
-        List<Product> result = productDao.findProducts("Galaxy", SortField.DESCRIPTION, SortOrder.ASC);
+        List<Product> result = productService.findProducts("Galaxy", SortField.DESCRIPTION, SortOrder.ASC);
 
         assertNotNull(result);
         assertEquals(3, result.size());
@@ -287,7 +292,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSearchAndSortByDescriptionDesc() {
-        List<Product> result = productDao.findProducts("Galaxy", SortField.DESCRIPTION, SortOrder.DESC);
+        List<Product> result = productService.findProducts("Galaxy", SortField.DESCRIPTION, SortOrder.DESC);
 
         assertNotNull(result);
         assertEquals(3, result.size());
@@ -300,7 +305,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSearchShouldReturnProductsContainingSearchQuery() {
-        List<Product> result = productDao.findProducts("I", SortField.NONE, SortOrder.NONE);
+        List<Product> result = productService.findProducts("I", SortField.NONE, SortOrder.NONE);
 
         assertNotNull(result);
         assertEquals(2, result.size());

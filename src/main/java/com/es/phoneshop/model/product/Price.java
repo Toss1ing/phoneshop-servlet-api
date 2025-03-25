@@ -1,9 +1,14 @@
 package com.es.phoneshop.model.product;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class Price {
+public class Price implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private BigDecimal price;
     private Date date;
 
