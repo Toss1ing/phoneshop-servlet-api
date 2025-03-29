@@ -13,14 +13,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.*;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ProductDetailPageServletTest {
 
     private ProductDetailPageServlet servlet;
@@ -71,6 +76,13 @@ public class ProductDetailPageServletTest {
 
     @Test
     public void testDoGetShouldLoadProductPage() throws ServletException, IOException {
+        when(request.getPathInfo()).thenReturn("/1");
+        when(productService.getProduct(1L)).thenReturn(product);
+        when(request.getSession()).thenReturn(session);
+        when(viewedProductsService.getLastViewedProducts(session)).thenReturn(List.of(product));
+
+        when(request.getRequestDispatcher("/WEB-INF/pages/product.jsp")).thenReturn(requestDispatcher);
+
         servlet.doGet(request, response);
 
         verify(productService).getProduct(1L);
@@ -79,10 +91,11 @@ public class ProductDetailPageServletTest {
 
         verify(request).setAttribute(eq("product"), eq(product));
         verify(request).setAttribute(eq("cart"), any());
-        verify(request).setAttribute(eq("viewedProducts"), any());
+        verify(session).setAttribute(eq("viewedProducts"), any());
 
         verify(requestDispatcher).forward(request, response);
     }
+
 
     @Test
     public void testDoPostShouldAddProductToCart() throws ServletException, IOException {

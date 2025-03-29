@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
 
+import java.math.BigDecimal;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -71,6 +73,8 @@ public class CartServiceTest {
 
         when(productService.getProduct(productId)).thenReturn(product);
         when(product.getStock()).thenReturn(10);
+        when(product.getPrice()).thenReturn(new BigDecimal(100));
+
 
         Cart cart = new Cart();
         when(session.getAttribute(SESSION_ATTRIBUTE)).thenReturn(cart);
@@ -108,6 +112,7 @@ public class CartServiceTest {
 
         when(productService.getProduct(productId)).thenReturn(product);
         when(product.getStock()).thenReturn(10);
+        when(product.getPrice()).thenReturn(new BigDecimal(100));
 
         when(session.getAttribute(SESSION_ATTRIBUTE)).thenReturn(cart);
 
@@ -149,6 +154,7 @@ public class CartServiceTest {
 
         when(productService.getProduct(productId)).thenReturn(product);
         when(product.getStock()).thenReturn(10);
+        when(product.getPrice()).thenReturn(new BigDecimal(100));
 
         when(session.getAttribute(SESSION_ATTRIBUTE)).thenReturn(cart);
 
@@ -164,6 +170,7 @@ public class CartServiceTest {
 
         when(productService.getProduct(productId)).thenReturn(product);
         when(product.getStock()).thenReturn(10);
+        when(product.getPrice()).thenReturn(new BigDecimal(100));
 
         Cart cart = new Cart();
         when(session.getAttribute(SESSION_ATTRIBUTE)).thenReturn(cart);
@@ -173,6 +180,61 @@ public class CartServiceTest {
         assertEquals(1, cart.getItems().size());
         assertEquals(product, cart.getItems().get(0).getProduct());
         assertEquals(quantity, cart.getItems().get(0).getQuantity());
+    }
+
+    @Test
+    public void testUpdateCartShouldChangeQuantity() {
+        Long productId = 1L;
+        int newQuantity = 5;
+
+        Cart cart = new Cart();
+        CartItem cartItem = new CartItem(product, 2);
+        cart.getItems().add(cartItem);
+
+        when(productService.getProduct(productId)).thenReturn(product);
+        when(product.getStock()).thenReturn(10);
+        when(product.getPrice()).thenReturn(new BigDecimal(100));
+        when(session.getAttribute(SESSION_ATTRIBUTE)).thenReturn(cart);
+
+        cartService.update(session, productId, newQuantity);
+
+        assertEquals("Quantity should be updated", newQuantity, cart.getItems().get(0).getQuantity());
+    }
+
+    @Test(expected = OutOfStockException.class)
+    public void testUpdateCartShouldThrowOutOfStockExceptionWhenNotEnoughStock() {
+        Long productId = 1L;
+        int newQuantity = 15;
+
+        Cart cart = new Cart();
+        CartItem cartItem = new CartItem(product, 2);
+        cart.getItems().add(cartItem);
+
+        when(productService.getProduct(productId)).thenReturn(product);
+        when(product.getStock()).thenReturn(10);
+        when(product.getPrice()).thenReturn(new BigDecimal(100));
+
+        when(session.getAttribute(SESSION_ATTRIBUTE)).thenReturn(cart);
+
+        cartService.update(session, productId, newQuantity);
+    }
+
+    @Test
+    public void testDeleteCartShouldRemoveItem() {
+        Long productId = 1L;
+
+        Cart cart = new Cart();
+        CartItem cartItem = new CartItem(product, 2);
+        when(product.getId()).thenReturn(productId);
+
+        cart.getItems().add(cartItem);
+
+        when(session.getAttribute(SESSION_ATTRIBUTE)).thenReturn(cart);
+        when(product.getPrice()).thenReturn(new BigDecimal(100));
+
+        cartService.delete(session, productId);
+
+        assertTrue("Cart should be empty after deletion", cart.getItems().isEmpty());
     }
 
 }
