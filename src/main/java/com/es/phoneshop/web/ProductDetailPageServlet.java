@@ -1,9 +1,10 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.exception.OutOfStockException;
-import com.es.phoneshop.exception.ValidationException;
-import com.es.phoneshop.service.*;
 import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.service.CartService;
+import com.es.phoneshop.service.ProductService;
+import com.es.phoneshop.service.ViewedProductsService;
 import com.es.phoneshop.service.impl.CartServiceImplement;
 import com.es.phoneshop.service.impl.ProductServiceImplement;
 import com.es.phoneshop.service.impl.ViewedProductsServiceImplement;
@@ -71,8 +72,6 @@ public class ProductDetailPageServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/products/" + productId + "?success=Product added to cart");
         } catch (OutOfStockException ex) {
             response.sendRedirect(request.getContextPath() + "/products/" + productId + "?error=Out of stock available " + ex.getStockAvailable());
-        } catch (ValidationException ex) {
-            response.sendRedirect(request.getContextPath() + "/products/" + productId + "?error=" + ex.getMessage());
         }
     }
 

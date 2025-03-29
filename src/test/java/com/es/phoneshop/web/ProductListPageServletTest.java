@@ -68,8 +68,6 @@ public class ProductListPageServletTest {
         when(request.getParameter("sort")).thenReturn(null);
         when(request.getParameter("order")).thenReturn(null);
 
-        when(productService.findProducts(null, null, null)).thenReturn(Collections.emptyList());
-
         servlet.doGet(request, response);
 
         verify(request).getRequestDispatcher("/WEB-INF/pages/productList.jsp");
