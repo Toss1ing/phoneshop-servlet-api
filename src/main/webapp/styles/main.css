@@ -29,6 +29,10 @@ td {
     text-align: right;
 }
 
+.total {
+    text-align: right;
+}
+
 .error {
     color: #f60000;
 }

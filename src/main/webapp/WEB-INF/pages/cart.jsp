@@ -6,11 +6,11 @@
 <jsp:useBean id="cart" type="com.es.phoneshop.model.cart.Cart" scope="request"/>
 <tags:master pageTitle="Cart">
     <p>
-        ${cart}
+            ${cart}
     </p>
     <c:if test="${not empty param.success}">
         <div class="success">
-            ${param.success}
+                ${param.success}
         </div>
     </c:if>
     <c:if test="${not empty cartErrors}">
@@ -76,6 +76,21 @@
                 </tr>
             </c:forEach>
             </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="2" class="total">Total:</td>
+                <td class="total">
+                    <span>
+                        ${cart.totalQuantity}
+                    </span>
+                </td>
+                <td>
+                    <span>
+                        <fmt:formatNumber value="${cart.totalPrice}" type="currency" currencySymbol="$"/>
+                    </span>
+                </td>
+            </tr>
+            </tfoot>
         </table>
         <p>
             <button>Update</button>
