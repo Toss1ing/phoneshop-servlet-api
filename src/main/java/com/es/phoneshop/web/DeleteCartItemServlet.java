@@ -28,6 +28,10 @@ public class DeleteCartItemServlet extends HttpServlet {
 
         cartService.delete(session, productId);
 
+        if (session.getAttribute("cartErrors") != null) {
+            session.removeAttribute("cartErrors");
+        }
+
         response.sendRedirect(request.getContextPath() + "/cart?success=Product removed");
     }
 

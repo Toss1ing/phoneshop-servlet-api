@@ -8,6 +8,7 @@ import com.es.phoneshop.service.ViewedProductsService;
 import com.es.phoneshop.service.impl.CartServiceImplement;
 import com.es.phoneshop.service.impl.ProductServiceImplement;
 import com.es.phoneshop.service.impl.ViewedProductsServiceImplement;
+import com.es.phoneshop.utility.InputValidator;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -16,7 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.text.ParseException;
 
 public class ProductDetailPageServlet extends HttpServlet {
@@ -53,15 +53,14 @@ public class ProductDetailPageServlet extends HttpServlet {
         Long productId = parseProductId(request);
         request.getSession().setAttribute("quantity", quantityStr);
 
-        if (!quantityStr.matches("[\\d.,]+")) {
+        if (InputValidator.isInvalidQuantity(quantityStr)) {
             response.sendRedirect(request.getContextPath() + "/products/" + parseProductId(request) + "?error=Invalid quantity: " + quantityStr);
             return;
         }
 
         int quantity;
         try {
-            NumberFormat format = NumberFormat.getInstance(request.getLocale());
-            quantity = format.parse(quantityStr).intValue();
+            quantity = InputValidator.parseQuantity(quantityStr, request.getLocale());
         } catch (ParseException e) {
             response.sendRedirect(request.getContextPath() + "/products/" + productId + "?error=Invalid quantity " + quantityStr);
             return;

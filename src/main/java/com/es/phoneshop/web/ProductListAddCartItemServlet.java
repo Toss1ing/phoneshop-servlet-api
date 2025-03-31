@@ -3,6 +3,7 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.service.CartService;
 import com.es.phoneshop.service.impl.CartServiceImplement;
+import com.es.phoneshop.utility.InputValidator;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -10,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.text.ParseException;
 
 public class ProductListAddCartItemServlet extends HttpServlet {
@@ -27,7 +27,7 @@ public class ProductListAddCartItemServlet extends HttpServlet {
         String quantityStr = request.getParameter("quantity").trim();
         Long productId = Long.parseLong(request.getParameter("productId").trim());
 
-        if (!quantityStr.matches("[\\d.,]+") || quantityStr.startsWith("0")) {
+        if (InputValidator.isInvalidQuantity(quantityStr)) {
             response.sendRedirect(request.getContextPath() + "/products" +
                     "?error=Invalid quantity " + quantityStr + "&productId=" + productId + "&quantity=" + quantityStr);
             return;
@@ -35,8 +35,7 @@ public class ProductListAddCartItemServlet extends HttpServlet {
 
         int quantity;
         try {
-            NumberFormat format = NumberFormat.getInstance(request.getLocale());
-            quantity = format.parse(quantityStr).intValue();
+            quantity = InputValidator.parseQuantity(quantityStr, request.getLocale());
         } catch (ParseException e) {
             response.sendRedirect(request.getContextPath() + "/products" +
                     "?error=Invalid quantity&productId=" + productId + "&quantity=" + quantityStr);

@@ -4,6 +4,7 @@ import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.service.CartService;
 import com.es.phoneshop.service.impl.CartServiceImplement;
+import com.es.phoneshop.utility.InputValidator;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -12,10 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 
@@ -56,15 +55,14 @@ public class CartPageServlet extends HttpServlet {
             Long productId = Long.parseLong(productIds[i]);
             String quantityStr = quantities[i].trim();
 
-            if (!quantityStr.matches("[\\d.,]+") || quantityStr.startsWith("0")) {
+            if (InputValidator.isInvalidQuantity(quantityStr)) {
                 errors.put(productId, "Invalid quantity: " + quantityStr);
                 cartQuantities.put(productId, quantityStr);
                 continue;
             }
 
             try {
-                Locale locale = request.getLocale();
-                int quantity = NumberFormat.getNumberInstance(locale).parse(quantityStr).intValue();
+                int quantity = InputValidator.parseQuantity(quantityStr, request.getLocale());
                 cartService.update(session, productId, quantity);
             } catch (ParseException ex) {
                 errors.put(productId, "Invalid quantity: " + quantityStr);

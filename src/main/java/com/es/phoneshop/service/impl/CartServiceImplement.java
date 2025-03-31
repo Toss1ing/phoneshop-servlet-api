@@ -92,8 +92,6 @@ public class CartServiceImplement implements CartService {
 
             recalculateCart(cart);
 
-            session.setAttribute(SESSION_ATTRIBUTE, cart);
-
         } finally {
             sessionLock.unlock();
         }
@@ -113,7 +111,6 @@ public class CartServiceImplement implements CartService {
 
             recalculateCart(cart);
 
-            session.setAttribute(SESSION_ATTRIBUTE, cart);
         } finally {
             sessionLock.unlock();
         }
