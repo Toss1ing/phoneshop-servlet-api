@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface OrderService {
     Order getOrder(Cart cart, HttpSession session);
+
     void placeOrder(Order order);
+
     List<String> getPaymentMethods();
 }

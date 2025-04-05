@@ -1,10 +1,10 @@
 package com.es.phoneshop.utility;
 
+import jakarta.servlet.http.HttpSession;
+
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.ConcurrentHashMap;
-
-import jakarta.servlet.http.HttpSession;
 
 public class SessionLockManager {
 

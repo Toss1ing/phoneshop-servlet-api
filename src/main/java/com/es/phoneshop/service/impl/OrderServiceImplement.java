@@ -1,11 +1,11 @@
 package com.es.phoneshop.service.impl;
 
+import com.es.phoneshop.dao.OrderDao;
 import com.es.phoneshop.dao.impl.OrderDaoImplement;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.order.Order;
 import com.es.phoneshop.model.order.PaymentMethod;
 import com.es.phoneshop.service.OrderService;
-import com.es.phoneshop.dao.OrderDao;
 import com.es.phoneshop.utility.SessionLockManager;
 import jakarta.servlet.http.HttpSession;
 
@@ -50,8 +50,7 @@ public class OrderServiceImplement implements OrderService {
             order.setDeliveryCost(calculateDeliveryCost());
             order.setTotalPrice(order.getSubtotal().add(order.getDeliveryCost()));
             return order;
-        }
-        finally {
+        } finally {
             sessionLock.unlock();
         }
     }

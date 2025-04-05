@@ -2,7 +2,8 @@ package com.es.phoneshop.dao;
 
 import com.es.phoneshop.model.order.Order;
 
-public interface OrderDao  {
+public interface OrderDao {
     void save(Order order);
+
     Order getOrderBySecureId(String secureId);
 }

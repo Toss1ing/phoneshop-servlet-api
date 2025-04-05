@@ -26,8 +26,7 @@ public abstract class GenericDao<T> {
             if (id == null) {
                 setId(entity);
                 entities.add(entity);
-            }
-            else {
+            } else {
                 boolean exists = entities.stream().anyMatch(e -> getId(e).equals(id));
                 if (exists) {
                     throw new ExistException("Entity already exists");

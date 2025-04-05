@@ -2,8 +2,8 @@ package com.es.phoneshop.dao.impl;
 
 import com.es.phoneshop.dao.GenericDao;
 import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.exception.NullDataException;
 import com.es.phoneshop.exception.NotFoundException;
+import com.es.phoneshop.exception.NullDataException;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.sort.SortField;
 import com.es.phoneshop.model.product.sort.SortOrder;
