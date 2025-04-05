@@ -4,7 +4,7 @@ import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartItem;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.service.ProductService;
+import com.es.phoneshop.dao.ProductDao;
 import jakarta.servlet.http.HttpSession;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class CartServiceTest {
     private HttpSession session;
 
     @Mock
-    private ProductService productService;
+    private ProductDao productService;
 
     @Mock
     private Product product;

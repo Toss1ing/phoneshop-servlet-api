@@ -15,4 +15,8 @@ public class InputValidator {
         return format.parse(quantityStr).intValue();
     }
 
+    public static boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
 }

@@ -2,7 +2,7 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.sort.SortField;
 import com.es.phoneshop.model.product.sort.SortOrder;
-import com.es.phoneshop.service.ProductService;
+import com.es.phoneshop.dao.ProductDao;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -31,7 +31,7 @@ public class ProductListPageServletTest {
     @Mock
     private RequestDispatcher requestDispatcher;
     @Mock
-    private ProductService productService;
+    private ProductDao productService;
     @Mock
     private ServletConfig config;
 

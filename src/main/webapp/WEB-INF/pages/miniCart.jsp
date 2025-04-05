@@ -9,6 +9,7 @@
         Cart total quantity: ${cart.totalQuantity}
     </div>
     <div>
-        Cart total price: ${cart.totalPrice}
+        Cart total price:
+        <fmt:formatNumber value="${cart.totalPrice}" type="currency" currencySymbol="$"/>
     </div>
 </a>

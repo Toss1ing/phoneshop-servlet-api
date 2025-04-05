@@ -1,7 +1,7 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.service.ProductService;
-import com.es.phoneshop.service.impl.ProductServiceImplement;
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.dao.impl.ProductDaoImplement;
 import com.es.phoneshop.model.product.Price;
 import com.es.phoneshop.model.product.Product;
 import jakarta.servlet.ServletContextEvent;
@@ -16,10 +16,10 @@ import java.util.Currency;
 import java.util.List;
 
 public class DemoDataServletContextListener implements ServletContextListener {
-    private final ProductService productService;
+    private final ProductDao productService;
 
     public DemoDataServletContextListener() {
-        this.productService = ProductServiceImplement.getInstance();
+        this.productService = ProductDaoImplement.getInstance();
     }
 
     @Override

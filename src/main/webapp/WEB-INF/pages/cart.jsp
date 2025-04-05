@@ -79,7 +79,7 @@
             <tfoot>
             <tr>
                 <td colspan="2" class="total">Total:</td>
-                <td class="total">
+                <td class="quantity">
                     <span>
                         ${cart.totalQuantity}
                     </span>
@@ -94,9 +94,12 @@
         </table>
         <p>
             <button>Update</button>
+            <button form="checkoutPageRedirect">Checkout</button>
         </p>
     </form>
     <form id="deleteCartItem" method="post">
+    </form>
+    <form id="checkoutPageRedirect" action="${pageContext.servletContext.contextPath}/checkout">
     </form>
 
 </tags:master>

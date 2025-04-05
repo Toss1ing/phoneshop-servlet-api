@@ -1,36 +1,36 @@
-package com.es.phoneshop.service.impl;
+package com.es.phoneshop.dao.impl;
 
+import com.es.phoneshop.dao.GenericDao;
+import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.exception.NullDataException;
-import com.es.phoneshop.exception.ProductExistException;
-import com.es.phoneshop.exception.ProductNotFoundException;
+import com.es.phoneshop.exception.NotFoundException;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.sort.SortField;
 import com.es.phoneshop.model.product.sort.SortOrder;
-import com.es.phoneshop.service.ProductService;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-public class ProductServiceImplement implements ProductService {
+public class ProductDaoImplement extends GenericDao<Product> implements ProductDao {
 
-    private static ProductServiceImplement instance;
+    private static ProductDaoImplement INSTANCE;
     private final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
-    private Long idCounter;
-    private final List<Product> products;
 
-    private ProductServiceImplement() {
-        idCounter = 0L;
-        products = new ArrayList<>();
+    private ProductDaoImplement() {
+        entities = new ArrayList<>();
+        countId = 0L;
     }
 
-    public static synchronized ProductServiceImplement getInstance() {
-        if (instance == null) {
-            instance = new ProductServiceImplement();
+    public static synchronized ProductDaoImplement getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ProductDaoImplement();
         }
-        return instance;
+        return INSTANCE;
     }
 
     @Override
@@ -42,10 +42,10 @@ public class ProductServiceImplement implements ProductService {
         reentrantReadWriteLock.readLock().lock();
 
         try {
-            return products.stream()
-                    .filter(product -> product.getId().equals(id))
+            return entities.stream()
+                    .filter(entity -> entity.getId().equals(id))
                     .findFirst()
-                    .orElseThrow(() -> new ProductNotFoundException(id));
+                    .orElseThrow(() -> new NotFoundException("Entity not found"));
         } finally {
             reentrantReadWriteLock.readLock().unlock();
         }
@@ -62,10 +62,10 @@ public class ProductServiceImplement implements ProductService {
             Comparator<Product> relevanceComparator = this.getRelevanceComparator(keywords, sortField, sortOrder);
             Comparator<Product> productComparator = this.getProductComparator(sortField, sortOrder);
 
-            return products.stream()
-                    .filter(product -> product.getStock() > 0 && product.getPrice() != null)
-                    .filter(product -> keywords.isEmpty() || keywords.stream()
-                            .anyMatch(word -> product.getDescription().toLowerCase().contains(word)))
+            return entities.stream()
+                    .filter(entity -> entity.getStock() > 0 && entity.getPrice() != null)
+                    .filter(entity -> keywords.isEmpty() || keywords.stream()
+                            .anyMatch(word -> entity.getDescription().toLowerCase().contains(word)))
                     .sorted(relevanceComparator.thenComparing(productComparator))
                     .collect(Collectors.toList());
         } finally {
@@ -112,30 +112,6 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public void save(Product product) {
-        reentrantReadWriteLock.writeLock().lock();
-
-        try {
-            if (product == null) {
-                throw new NullDataException("Product cannot be null");
-            }
-            if (product.getId() == null) {
-                product.setId(idCounter++);
-                products.add(product);
-            } else {
-                boolean productExists = products.stream()
-                        .anyMatch(p -> product.getId().equals(p.getId()));
-                if (productExists) {
-                    throw new ProductExistException("Product with id " + product.getId() + " already exists");
-                }
-                products.add(product);
-            }
-        } finally {
-            reentrantReadWriteLock.writeLock().unlock();
-        }
-    }
-
-    @Override
     public void delete(Long id) {
         if (id == null) {
             throw new NullDataException("Product id cannot be null");
@@ -144,14 +120,23 @@ public class ProductServiceImplement implements ProductService {
         reentrantReadWriteLock.writeLock().lock();
 
         try {
-            boolean removed = products.removeIf(product -> id.equals(product.getId()));
+            boolean removed = entities.removeIf(entity -> id.equals(entity.getId()));
 
             if (!removed) {
-                throw new ProductNotFoundException(id);
+                throw new NotFoundException("Entity not found");
             }
         } finally {
             reentrantReadWriteLock.writeLock().unlock();
         }
     }
 
+    @Override
+    protected Long getId(Product product) {
+        return product.getId();
+    }
+
+    @Override
+    protected void setId(Product product) {
+        product.setId(countId++);
+    }
 }

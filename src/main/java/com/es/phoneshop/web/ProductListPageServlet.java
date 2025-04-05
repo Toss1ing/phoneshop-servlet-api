@@ -1,9 +1,9 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.dao.impl.ProductDaoImplement;
 import com.es.phoneshop.model.product.sort.SortField;
 import com.es.phoneshop.model.product.sort.SortOrder;
-import com.es.phoneshop.service.ProductService;
-import com.es.phoneshop.service.impl.ProductServiceImplement;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -15,19 +15,26 @@ import java.io.IOException;
 
 public class ProductListPageServlet extends HttpServlet {
 
-    protected ProductService productService;
+    private final static String PRODUCT_LIST_JSP = "/WEB-INF/pages/productList.jsp";
+
+    private final static String QUERY_ATTR = "query";
+    private final static String SORT_ATTR = "sort";
+    private final static String ORDER_ATTR = "order";
+    private final static String PRODUCTS_ATTR = "products";
+
+    protected ProductDao productService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        productService = ProductServiceImplement.getInstance();
+        productService = ProductDaoImplement.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String query = request.getParameter("query");
-        String sortFieldStr = request.getParameter("sort");
-        String sortOrderStr = request.getParameter("order");
+        String query = request.getParameter(QUERY_ATTR);
+        String sortFieldStr = request.getParameter(SORT_ATTR);
+        String sortOrderStr = request.getParameter(ORDER_ATTR);
 
         SortField sortField = StringUtils.isBlank(sortFieldStr)
                 ? SortField.NONE
@@ -37,8 +44,8 @@ public class ProductListPageServlet extends HttpServlet {
                 ? SortOrder.NONE
                 : SortOrder.valueOf(sortOrderStr.toUpperCase());
 
-        request.setAttribute("products", productService.findProducts(query, sortField, sortOrder));
-        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+        request.setAttribute(PRODUCTS_ATTR, productService.findProducts(query, sortField, sortOrder));
+        request.getRequestDispatcher(PRODUCT_LIST_JSP).forward(request, response);
     }
 
 }

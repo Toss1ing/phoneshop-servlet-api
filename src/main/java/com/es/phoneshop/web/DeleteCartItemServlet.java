@@ -2,6 +2,7 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.service.CartService;
 import com.es.phoneshop.service.impl.CartServiceImplement;
+import com.es.phoneshop.utility.UrlPatterns;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -12,6 +13,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class DeleteCartItemServlet extends HttpServlet {
+
+    private static final String CART_ERRORS_ATTR = "cartErrors";
 
     protected CartService cartService;
 
@@ -28,11 +31,15 @@ public class DeleteCartItemServlet extends HttpServlet {
 
         cartService.delete(session, productId);
 
-        if (session.getAttribute("cartErrors") != null) {
-            session.removeAttribute("cartErrors");
+        if (session.getAttribute(CART_ERRORS_ATTR) != null) {
+            session.removeAttribute(CART_ERRORS_ATTR);
         }
 
-        response.sendRedirect(request.getContextPath() + "/cart?success=Product removed");
+        response.sendRedirect(String.format(
+                UrlPatterns.DeleteCartItemUrlPattern.DELETE_CART_ITEM_SUCCESS_URL,
+                request.getContextPath(),
+                "Product removed")
+        );
     }
 
     protected Long parseProductId(HttpServletRequest request) {

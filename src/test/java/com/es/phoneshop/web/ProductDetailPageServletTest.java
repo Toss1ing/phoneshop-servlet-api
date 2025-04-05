@@ -3,7 +3,7 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.CartService;
-import com.es.phoneshop.service.ProductService;
+import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.service.impl.ViewedProductsServiceImplement;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
@@ -31,7 +31,7 @@ public class ProductDetailPageServletTest {
     private ProductDetailPageServlet servlet;
 
     @Mock
-    private ProductService productService;
+    private ProductDao productService;
 
     @Mock
     private CartService cartService;

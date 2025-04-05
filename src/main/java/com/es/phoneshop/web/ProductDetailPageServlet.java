@@ -1,14 +1,15 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.dao.impl.ProductDaoImplement;
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.CartService;
-import com.es.phoneshop.service.ProductService;
 import com.es.phoneshop.service.ViewedProductsService;
 import com.es.phoneshop.service.impl.CartServiceImplement;
-import com.es.phoneshop.service.impl.ProductServiceImplement;
 import com.es.phoneshop.service.impl.ViewedProductsServiceImplement;
 import com.es.phoneshop.utility.InputValidator;
+import com.es.phoneshop.utility.UrlPatterns;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -21,14 +22,21 @@ import java.text.ParseException;
 
 public class ProductDetailPageServlet extends HttpServlet {
 
-    protected ProductService productService;
+    private final static String PRODUCT_JSP = "/WEB-INF/pages/product.jsp";
+
+    private final static String PRODUCT_ATTR = "product";
+    private final static String QUANTITY_ATTR = "quantity";
+    private final static String CART_ATTR = "cart";
+    private final static String OVERVIEW_ATTR = "viewedProducts";
+
+    protected ProductDao productService;
     protected CartService cartService;
     protected ViewedProductsService viewedProductsService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        productService = ProductServiceImplement.getInstance();
+        productService = ProductDaoImplement.getInstance();
         cartService = CartServiceImplement.getInstance();
         viewedProductsService = ViewedProductsServiceImplement.getInstance();
     }
@@ -41,20 +49,26 @@ public class ProductDetailPageServlet extends HttpServlet {
         HttpSession session = request.getSession();
         viewedProductsService.addViewedProduct(session, product);
 
-        request.setAttribute("product", product);
-        request.setAttribute("cart", cartService.getCart(session));
-        session.setAttribute("viewedProducts", viewedProductsService.getLastViewedProducts(session));
-        request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+        request.setAttribute(PRODUCT_ATTR, product);
+        request.setAttribute(CART_ATTR, cartService.getCart(session));
+        session.setAttribute(OVERVIEW_ATTR, viewedProductsService.getLastViewedProducts(session));
+        request.getRequestDispatcher(PRODUCT_JSP).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String quantityStr = request.getParameter("quantity").trim();
+        String quantityStr = request.getParameter(QUANTITY_ATTR).trim();
         Long productId = parseProductId(request);
-        request.getSession().setAttribute("quantity", quantityStr);
+        request.getSession().setAttribute(QUANTITY_ATTR, quantityStr);
 
         if (InputValidator.isInvalidQuantity(quantityStr)) {
-            response.sendRedirect(request.getContextPath() + "/products/" + parseProductId(request) + "?error=Invalid quantity: " + quantityStr);
+            response.sendRedirect(String.format(
+                    UrlPatterns.ProductDetailUrlPattern.PRODUCT_DETAIL_ERROR_URL,
+                    request.getContextPath(),
+                    productId,
+                    "Invalid quantity",
+                    quantityStr)
+            );
             return;
         }
 
@@ -62,15 +76,32 @@ public class ProductDetailPageServlet extends HttpServlet {
         try {
             quantity = InputValidator.parseQuantity(quantityStr, request.getLocale());
         } catch (ParseException e) {
-            response.sendRedirect(request.getContextPath() + "/products/" + productId + "?error=Invalid quantity " + quantityStr);
+            response.sendRedirect(String.format(
+                    UrlPatterns.ProductDetailUrlPattern.PRODUCT_DETAIL_ERROR_URL,
+                    request.getContextPath(),
+                    productId,
+                    "Invalid quantity",
+                    quantityStr)
+            );
             return;
         }
 
         try {
             cartService.add(request.getSession(), productId, quantity);
-            response.sendRedirect(request.getContextPath() + "/products/" + productId + "?success=Product added to cart");
+            response.sendRedirect(String.format(
+                    UrlPatterns.ProductDetailUrlPattern.PRODUCT_DETAIL_SUCCESS_URL,
+                    request.getContextPath(),
+                    productId,
+                    "Product added to cart")
+            );
         } catch (OutOfStockException ex) {
-            response.sendRedirect(request.getContextPath() + "/products/" + productId + "?error=Out of stock available " + ex.getStockAvailable());
+            response.sendRedirect(String.format(
+                    UrlPatterns.ProductDetailUrlPattern.PRODUCT_DETAIL_ERROR_URL,
+                    request.getContextPath(),
+                    productId,
+                    "Out of stock available",
+                    ex.getStockAvailable())
+            );
         }
     }
 

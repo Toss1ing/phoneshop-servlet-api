@@ -1,6 +1,6 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.exception.ProductNotFoundException;
+import com.es.phoneshop.exception.NotFoundException;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,16 +33,15 @@ public class ErrorHandlerServletTest {
     }
 
     @Test
-    public void testDoGetShouldForwardToErrorProductNotFoundPageWhenProductNotFoundException() throws ServletException, IOException {
-        ProductNotFoundException exception = new ProductNotFoundException(123L);
+    public void testDoGetShouldForwardToErrorEntityNotFoundPageWhenProductNotFoundException() throws ServletException, IOException {
+        NotFoundException exception = new NotFoundException("");
         when(request.getAttribute("jakarta.servlet.error.exception")).thenReturn(exception);
-        when(request.getRequestDispatcher("/WEB-INF/pages/errorProductNotFound.jsp")).thenReturn(requestDispatcher);
+        when(request.getRequestDispatcher("/WEB-INF/pages/errorEntityNotFound.jsp")).thenReturn(requestDispatcher);
 
         servlet.doGet(request, response);
 
-        verify(request).setAttribute("productId", 123L);
         verify(requestDispatcher).forward(request, response);
-        verify(request).getRequestDispatcher("/WEB-INF/pages/errorProductNotFound.jsp");
+        verify(request).getRequestDispatcher("/WEB-INF/pages/errorEntityNotFound.jsp");
     }
 
 

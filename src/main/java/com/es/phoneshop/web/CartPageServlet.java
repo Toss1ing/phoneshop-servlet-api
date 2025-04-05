@@ -5,6 +5,7 @@ import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.service.CartService;
 import com.es.phoneshop.service.impl.CartServiceImplement;
 import com.es.phoneshop.utility.InputValidator;
+import com.es.phoneshop.utility.UrlPatterns;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -17,8 +18,15 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class CartPageServlet extends HttpServlet {
+
+    private static final String CART_ATTR = "cart";
+    private static final String CART_ERRORS_ATTR = "cartErrors";
+    private static final String CART_QUANTITIES_ATTR = "cartQuantities";
+    private static final String PRODUCT_ID_ATTR = "productId";
+    private static final String QUANTITY_ATTR = "quantity";
+
+    private static final String CART_JSP = "/WEB-INF/pages/cart.jsp";
 
     protected CartService cartService;
 
@@ -33,18 +41,22 @@ public class CartPageServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Cart cart = cartService.getCart(session);
 
-        request.setAttribute("cart", cart);
-        request.getRequestDispatcher("/WEB-INF/pages/cart.jsp").forward(request, response);
+        request.setAttribute(CART_ATTR, cart);
+        request.getRequestDispatcher(CART_JSP).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        String[] productIds = request.getParameterValues("productId");
-        String[] quantities = request.getParameterValues("quantity");
+        String[] productIds = request.getParameterValues(PRODUCT_ID_ATTR);
+        String[] quantities = request.getParameterValues(QUANTITY_ATTR);
 
         if (productIds == null) {
-            response.sendRedirect(request.getContextPath() + "/cart?success=Add products to the cart");
+            response.sendRedirect(String.format(
+                    UrlPatterns.CartPageUrlPattern.CART_PAGE_SUCCESS_URL,
+                    request.getContextPath(),
+                    "Add products to the cart")
+            );
             return;
         }
 
@@ -74,13 +86,17 @@ public class CartPageServlet extends HttpServlet {
         }
 
         if (!errors.isEmpty()) {
-            session.setAttribute("cartErrors", errors);
-            session.setAttribute("cartQuantities", cartQuantities);
+            session.setAttribute(CART_ERRORS_ATTR, errors);
+            session.setAttribute(CART_QUANTITIES_ATTR, cartQuantities);
             response.sendRedirect(request.getContextPath() + "/cart");
         } else {
-            session.removeAttribute("cartErrors");
-            session.removeAttribute("cartQuantities");
-            response.sendRedirect(request.getContextPath() + "/cart?success=Cart updated successfully");
+            session.removeAttribute(CART_ERRORS_ATTR);
+            session.removeAttribute(CART_QUANTITIES_ATTR);
+            response.sendRedirect(String.format(
+                    UrlPatterns.CartPageUrlPattern.CART_PAGE_SUCCESS_URL,
+                    request.getContextPath(),
+                    "Cart updated successfully")
+            );
         }
     }
 
