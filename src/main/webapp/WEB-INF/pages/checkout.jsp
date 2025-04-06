@@ -108,12 +108,14 @@
             <tags:input id="phone"
                         label="phone"
                         value="${formData.phone}"
+                        placeholder="+375291234567"
                         error="${errors}"
                         required="true"
             />
             <tags:input id="deliveryDate"
                         label="Deliveryd date"
                         value="${formData.deliveryDate}"
+                        type="date"
                         error="${errors}"
                         required="true"
             />

@@ -29,6 +29,10 @@ public class ProductDetailPageServlet extends HttpServlet {
     private final static String CART_ATTR = "cart";
     private final static String OVERVIEW_ATTR = "viewedProducts";
 
+    private static final String MSG_PRODUCT_ADD_TO_CART = "Product added to cart";
+    private static final String MSG_INVALID_QUANTITY = "Invalid quantity: ";
+    private static final String MSG_OUT_OF_STOCK = "Out of stock: ";
+
     protected ProductDao productService;
     protected CartService cartService;
     protected ViewedProductsService viewedProductsService;
@@ -66,7 +70,7 @@ public class ProductDetailPageServlet extends HttpServlet {
                     UrlPatterns.ProductDetailUrlPattern.PRODUCT_DETAIL_ERROR_URL,
                     request.getContextPath(),
                     productId,
-                    "Invalid quantity ",
+                    MSG_INVALID_QUANTITY,
                     quantityStr)
             );
             return;
@@ -80,7 +84,7 @@ public class ProductDetailPageServlet extends HttpServlet {
                     UrlPatterns.ProductDetailUrlPattern.PRODUCT_DETAIL_ERROR_URL,
                     request.getContextPath(),
                     productId,
-                    "Invalid quantity ",
+                    MSG_INVALID_QUANTITY,
                     quantityStr)
             );
             return;
@@ -92,14 +96,14 @@ public class ProductDetailPageServlet extends HttpServlet {
                     UrlPatterns.ProductDetailUrlPattern.PRODUCT_DETAIL_SUCCESS_URL,
                     request.getContextPath(),
                     productId,
-                    "Product added to cart")
+                    MSG_PRODUCT_ADD_TO_CART)
             );
         } catch (OutOfStockException ex) {
             response.sendRedirect(String.format(
                     UrlPatterns.ProductDetailUrlPattern.PRODUCT_DETAIL_ERROR_URL,
                     request.getContextPath(),
                     productId,
-                    "Out of stock available ",
+                    MSG_OUT_OF_STOCK,
                     ex.getStockAvailable())
             );
         }

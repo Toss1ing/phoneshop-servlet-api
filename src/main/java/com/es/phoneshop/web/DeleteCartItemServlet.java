@@ -16,6 +16,8 @@ public class DeleteCartItemServlet extends HttpServlet {
 
     private static final String CART_ERRORS_ATTR = "cartErrors";
 
+    private static final String MSG_REMOVE_PRODUCT = "Product removed";
+
     protected CartService cartService;
 
     @Override
@@ -38,7 +40,7 @@ public class DeleteCartItemServlet extends HttpServlet {
         response.sendRedirect(String.format(
                 UrlPatterns.DeleteCartItemUrlPattern.DELETE_CART_ITEM_SUCCESS_URL,
                 request.getContextPath(),
-                "Product removed")
+                MSG_REMOVE_PRODUCT)
         );
     }
 

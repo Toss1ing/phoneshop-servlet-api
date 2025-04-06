@@ -21,6 +21,10 @@ public class ProductListAddCartItemServlet extends HttpServlet {
     private static final String QUANTITY_ATTR = "quantity";
     private static final String PRODUCT_ID_ATTR = "productId";
 
+    private static final String MSG_PRODUCT_ADD_TO_CART = "Product added to cart";
+    private static final String MSG_INVALID_QUANTITY = "Invalid quantity: ";
+    private static final String MSG_OUT_OF_STOCK = "Out of stock: ";
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -35,7 +39,7 @@ public class ProductListAddCartItemServlet extends HttpServlet {
             response.sendRedirect(String.format(
                     UrlPatterns.ProductListAddCartItemUrlPattern.PRODUCT_LIST_ADD_CART_ITEM_ERROR_URL,
                     request.getContextPath(),
-                    "Invalid quantity ",
+                    MSG_INVALID_QUANTITY,
                     quantityStr,
                     productId,
                     quantityStr)
@@ -50,7 +54,7 @@ public class ProductListAddCartItemServlet extends HttpServlet {
             response.sendRedirect(String.format(
                     UrlPatterns.ProductListAddCartItemUrlPattern.PRODUCT_LIST_ADD_CART_ITEM_ERROR_URL,
                     request.getContextPath(),
-                    "Invalid quantity ",
+                    MSG_INVALID_QUANTITY,
                     quantityStr,
                     productId,
                     quantityStr)
@@ -63,13 +67,13 @@ public class ProductListAddCartItemServlet extends HttpServlet {
             response.sendRedirect(String.format(
                     UrlPatterns.ProductListAddCartItemUrlPattern.PRODUCT_LIST_CART_ITEM_SUCCESS_URL,
                     request.getContextPath(),
-                    "Product added to cart")
+                    MSG_PRODUCT_ADD_TO_CART)
             );
         } catch (OutOfStockException ex) {
             response.sendRedirect(String.format(
                     UrlPatterns.ProductListAddCartItemUrlPattern.PRODUCT_LIST_ADD_CART_ITEM_ERROR_URL,
                     request.getContextPath(),
-                    "Out of stock available ",
+                    MSG_OUT_OF_STOCK,
                     ex.getStockAvailable(),
                     productId,
                     quantityStr)

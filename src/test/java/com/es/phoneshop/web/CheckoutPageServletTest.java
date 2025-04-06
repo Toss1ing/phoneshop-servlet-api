@@ -86,7 +86,7 @@ public class CheckoutPageServletTest {
         when(request.getParameter("firstName")).thenReturn("John");
         when(request.getParameter("lastName")).thenReturn("Doe");
         when(request.getParameter("phone")).thenReturn("+123456789");
-        when(request.getParameter("deliveryDate")).thenReturn("10.04.2025");
+        when(request.getParameter("deliveryDate")).thenReturn("2025-04-20");
         when(request.getParameter("deliveryAddress")).thenReturn("123 Main St");
         when(request.getParameter("paymentMethod")).thenReturn("CASH");
 
@@ -100,11 +100,11 @@ public class CheckoutPageServletTest {
     }
 
     @Test
-    public void testDoPostWithInvalidPhoneShouldReturnToForm() throws ServletException, IOException {
+    public void testDoPostWithInvalidInputReturnToForm() throws ServletException, IOException {
         when(request.getParameter("firstName")).thenReturn("John");
         when(request.getParameter("lastName")).thenReturn("Doe");
         when(request.getParameter("phone")).thenReturn("invalidPhone");
-        when(request.getParameter("deliveryDate")).thenReturn("10.04.2025");
+        when(request.getParameter("deliveryDate")).thenReturn("2025-04-20");
         when(request.getParameter("deliveryAddress")).thenReturn("123 Main St");
         when(request.getParameter("paymentMethod")).thenReturn("CASH");
 
@@ -123,7 +123,7 @@ public class CheckoutPageServletTest {
         when(request.getParameter("firstName")).thenReturn("Jane");
         when(request.getParameter("lastName")).thenReturn("Smith");
         when(request.getParameter("phone")).thenReturn("+123456789");
-        when(request.getParameter("deliveryDate")).thenReturn("invalid-date");
+        when(request.getParameter("deliveryDate")).thenReturn("2000-01-20");
         when(request.getParameter("deliveryAddress")).thenReturn("456 Elm St");
         when(request.getParameter("paymentMethod")).thenReturn("CARD");
 

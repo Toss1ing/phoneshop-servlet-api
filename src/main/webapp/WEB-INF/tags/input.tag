@@ -2,6 +2,8 @@
 <%@ attribute name="id" required="true" %>
 <%@ attribute name="label" required="true" %>
 <%@ attribute name="value" required="false" %>
+<%@ attribute name="placeholder" required="false" %>
+<%@ attribute name="type" required="false" %>
 <%@ attribute name="error" required="false" type="java.util.Map" %>
 <%@ attribute name="required" required="false" %>
 <%@ attribute name="readonly" required="false" %>
@@ -11,7 +13,9 @@
     <td>
         <input id="${id}"
                name="${id}"
+               type="${type}"
                value="${value}"
+               placeholder="${placeholder}"
                <c:if test="${required}">required</c:if>
                <c:if test="${readonly}">readonly</c:if>
         />

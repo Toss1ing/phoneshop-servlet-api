@@ -7,6 +7,7 @@ import com.es.phoneshop.service.CartService;
 import com.es.phoneshop.service.OrderService;
 import com.es.phoneshop.service.impl.CartServiceImplement;
 import com.es.phoneshop.service.impl.OrderServiceImplement;
+import com.es.phoneshop.utility.UrlPatterns;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -35,6 +36,11 @@ public class CheckoutPageServlet extends HttpServlet {
     private static final String ORDER_ATTR = "order";
     private static final String FORM_DATA_ATTR = "formData";
     private static final String ERROR_ATTR = "errors";
+
+    private static final String MSG_INVALID_PHONE_NUMBER = "Invalid phone number format.";
+    private static final String MSG_EMPTY_INPUT = "must not be empty.";
+    private static final String MSG_LETTERS_REQUIRED = " must contain letters";
+    private static final String MSG_DELIVERY_DATE_IN_PAST = "Delivery date must be after now";
 
     protected OrderService orderService;
     protected CartService cartService;
@@ -87,7 +93,10 @@ public class CheckoutPageServlet extends HttpServlet {
 
         orderService.placeOrder(order);
         cartService.clear(request.getSession());
-        response.sendRedirect(request.getContextPath() + "/order/overview/" + order.getSecureId());
+        response.sendRedirect(String.format(
+                UrlPatterns.OverviewPageUrlPattern.OVERVIEW_PAGE_SUCCESS_URL,
+                request.getContextPath())
+        );
     }
 
     private Map<String, String> getUserInput(HttpServletRequest request) {
@@ -105,15 +114,16 @@ public class CheckoutPageServlet extends HttpServlet {
         validateName(errors, formData.get(FIRST_NAME_ATTR), FIRST_NAME_ATTR);
         validateName(errors, formData.get(LAST_NAME_ATTR), LAST_NAME_ATTR);
         validatePhone(errors, formData.get(PHONE_ATTR));
+        validateDeliveryAddress(errors, formData.get(DELIVERY_ADDRESS_ATTR));
 
-        if (deliveryDate == null) {
-            errors.put(DELIVERY_DATE_ATTR, "Invalid date format. Expected format: dd.MM.yyyy");
+        if (deliveryDate == null || !deliveryDate.isAfter(LocalDate.now())) {
+            errors.put(DELIVERY_DATE_ATTR, MSG_DELIVERY_DATE_IN_PAST);
         }
     }
 
     private LocalDate parseDate(String deliveryDateStr) {
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             return LocalDate.parse(deliveryDateStr, formatter);
         } catch (DateTimeParseException e) {
             return null;
@@ -130,18 +140,30 @@ public class CheckoutPageServlet extends HttpServlet {
     }
 
     private void validateName(Map<String, String> errors, String name, String fieldName) {
-        if (name.matches(".*\\d.*")) {
-            errors.put(fieldName, getReadableFieldName(fieldName) + " must not contain digits");
+        if (name == null || name.isEmpty()) {
+            errors.put(fieldName, getReadableFieldName(fieldName) + MSG_EMPTY_INPUT);
+            return;
+        }
+
+        if (!name.matches("^[A-Za-zА-Яа-яЁё\\s-]+$")) {
+            errors.put(fieldName, getReadableFieldName(fieldName) + MSG_LETTERS_REQUIRED);
+        }
+
+    }
+
+    private void validateDeliveryAddress(Map<String, String> errors, String deliveryAddress) {
+        if (deliveryAddress == null || deliveryAddress.isEmpty()) {
+            errors.put(DELIVERY_ADDRESS_ATTR, getReadableFieldName(DELIVERY_ADDRESS_ATTR) + MSG_EMPTY_INPUT);
         }
     }
 
     private String getReadableFieldName(String fieldName) {
-        return fieldName.replaceAll("([A-Z])", " $1").trim();
+        return fieldName.replaceAll("([A-Z])", " $1").trim().toLowerCase();
     }
 
     private void validatePhone(Map<String, String> errors, String phone) {
         if (!phone.matches("^\\+\\d[\\d\\s-]*$")) {
-            errors.put(CheckoutPageServlet.PHONE_ATTR, "Invalid phone number format.");
+            errors.put(PHONE_ATTR, MSG_INVALID_PHONE_NUMBER);
         }
     }
 

@@ -19,6 +19,11 @@ public class UrlPatterns {
 
     public static class CartPageUrlPattern {
         public static final String CART_PAGE_SUCCESS_URL = "%s/cart?success=%s";
+        public static final String CART_PAGE = "%s/cart";
+    }
+
+    public static class OverviewPageUrlPattern {
+        public static final String OVERVIEW_PAGE_SUCCESS_URL = "%s/order/overview/";
     }
 
 }

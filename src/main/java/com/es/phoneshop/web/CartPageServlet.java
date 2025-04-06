@@ -26,6 +26,10 @@ public class CartPageServlet extends HttpServlet {
     private static final String PRODUCT_ID_ATTR = "productId";
     private static final String QUANTITY_ATTR = "quantity";
 
+    private static final String MSG_CART_UPDATE_SUCCESS = "Cart updated successfully";
+    private static final String MSG_MSG_INVALID_QUANTITY = "Invalid quantity: ";
+    private static final String MSG_OUT_OF_STOCK = "Out of stock: ";
+
     private static final String CART_JSP = "/WEB-INF/pages/cart.jsp";
 
     protected CartService cartService;
@@ -55,7 +59,7 @@ public class CartPageServlet extends HttpServlet {
             response.sendRedirect(String.format(
                     UrlPatterns.CartPageUrlPattern.CART_PAGE_SUCCESS_URL,
                     request.getContextPath(),
-                    "Add products to the cart")
+                    MSG_CART_UPDATE_SUCCESS)
             );
             return;
         }
@@ -68,7 +72,7 @@ public class CartPageServlet extends HttpServlet {
             String quantityStr = quantities[i].trim();
 
             if (InputValidator.isInvalidQuantity(quantityStr)) {
-                errors.put(productId, "Invalid quantity: " + quantityStr);
+                errors.put(productId, MSG_MSG_INVALID_QUANTITY + quantityStr);
                 cartQuantities.put(productId, quantityStr);
                 continue;
             }
@@ -77,10 +81,10 @@ public class CartPageServlet extends HttpServlet {
                 int quantity = InputValidator.parseQuantity(quantityStr, request.getLocale());
                 cartService.update(session, productId, quantity);
             } catch (ParseException ex) {
-                errors.put(productId, "Invalid quantity: " + quantityStr);
+                errors.put(productId, MSG_MSG_INVALID_QUANTITY + quantityStr);
                 cartQuantities.put(productId, quantityStr);
             } catch (OutOfStockException ex) {
-                errors.put(productId, "Out of stock: " + ex.getStockAvailable());
+                errors.put(productId, MSG_OUT_OF_STOCK + ex.getStockAvailable());
                 cartQuantities.put(productId, quantityStr);
             }
         }
@@ -88,14 +92,17 @@ public class CartPageServlet extends HttpServlet {
         if (!errors.isEmpty()) {
             session.setAttribute(CART_ERRORS_ATTR, errors);
             session.setAttribute(CART_QUANTITIES_ATTR, cartQuantities);
-            response.sendRedirect(request.getContextPath() + "/cart");
+            response.sendRedirect(String.format(
+                    UrlPatterns.CartPageUrlPattern.CART_PAGE,
+                    request.getContextPath()
+            ));
         } else {
             session.removeAttribute(CART_ERRORS_ATTR);
             session.removeAttribute(CART_QUANTITIES_ATTR);
             response.sendRedirect(String.format(
                     UrlPatterns.CartPageUrlPattern.CART_PAGE_SUCCESS_URL,
                     request.getContextPath(),
-                    "Cart updated successfully")
+                    MSG_CART_UPDATE_SUCCESS)
             );
         }
     }
