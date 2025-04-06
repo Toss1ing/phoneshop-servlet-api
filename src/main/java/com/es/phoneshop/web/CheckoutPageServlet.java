@@ -95,7 +95,8 @@ public class CheckoutPageServlet extends HttpServlet {
         cartService.clear(request.getSession());
         response.sendRedirect(String.format(
                 UrlPatterns.OverviewPageUrlPattern.OVERVIEW_PAGE_SUCCESS_URL,
-                request.getContextPath())
+                request.getContextPath(),
+                order.getSecureId())
         );
     }
 

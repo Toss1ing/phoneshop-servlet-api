@@ -23,7 +23,7 @@ public class UrlPatterns {
     }
 
     public static class OverviewPageUrlPattern {
-        public static final String OVERVIEW_PAGE_SUCCESS_URL = "%s/order/overview/";
+        public static final String OVERVIEW_PAGE_SUCCESS_URL = "%s/order/overview/%s";
     }
 
 }
