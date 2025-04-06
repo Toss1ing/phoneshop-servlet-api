@@ -1,7 +1,9 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.model.product.Product;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,23 +11,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextEvent;
-
-import static org.mockito.Mockito.*;
-
 import java.math.BigDecimal;
 import java.util.List;
+
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DemoDataServletContextListenerTest {
 
     @Mock
     private ServletContext servletContext;
+
     @Mock
     private ServletContextEvent servletContextEvent;
+
     @Mock
     private ProductDao productService;
+
     @InjectMocks
     private DemoDataServletContextListener demoDataServletContextListener;
 

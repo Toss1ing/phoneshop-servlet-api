@@ -22,8 +22,10 @@ public class ErrorHandlerServletTest {
 
     @Mock
     private HttpServletRequest request;
+
     @Mock
     private HttpServletResponse response;
+
     @Mock
     private RequestDispatcher requestDispatcher;
 
@@ -44,7 +46,6 @@ public class ErrorHandlerServletTest {
         verify(request).getRequestDispatcher("/WEB-INF/pages/errorEntityNotFound.jsp");
     }
 
-
     @Test
     public void testDoGetShouldForwardToErrorPageForOtherExceptions() throws ServletException, IOException {
         Exception exception = new Exception("Some error");
@@ -57,7 +58,6 @@ public class ErrorHandlerServletTest {
         verify(request).getRequestDispatcher("/WEB-INF/pages/error.jsp");
     }
 
-
     @Test
     public void testDoGetShouldForwardToErrorPageWhenNoException() throws ServletException, IOException {
         when(request.getAttribute("jakarta.servlet.error.exception")).thenReturn(null);
@@ -65,6 +65,17 @@ public class ErrorHandlerServletTest {
         servlet.doGet(request, response);
 
         verify(requestDispatcher).forward(request, response);
+    }
+
+    @Test
+    public void testDoGetShouldForwardToTooManyRequestsPageWhenStatusCodeIs429() throws ServletException, IOException {
+        when(request.getAttribute("jakarta.servlet.error.status_code")).thenReturn(429);
+        when(request.getRequestDispatcher("/WEB-INF/pages/errorToManyRequests.jsp")).thenReturn(requestDispatcher);
+
+        servlet.doGet(request, response);
+
+        verify(requestDispatcher).forward(request, response);
+        verify(request).getRequestDispatcher("/WEB-INF/pages/errorToManyRequests.jsp");
     }
 
 }

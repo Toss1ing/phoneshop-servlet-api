@@ -66,7 +66,7 @@ public class ProductDetailPageServlet extends HttpServlet {
                     UrlPatterns.ProductDetailUrlPattern.PRODUCT_DETAIL_ERROR_URL,
                     request.getContextPath(),
                     productId,
-                    "Invalid quantity",
+                    "Invalid quantity ",
                     quantityStr)
             );
             return;
@@ -80,7 +80,7 @@ public class ProductDetailPageServlet extends HttpServlet {
                     UrlPatterns.ProductDetailUrlPattern.PRODUCT_DETAIL_ERROR_URL,
                     request.getContextPath(),
                     productId,
-                    "Invalid quantity",
+                    "Invalid quantity ",
                     quantityStr)
             );
             return;
@@ -99,7 +99,7 @@ public class ProductDetailPageServlet extends HttpServlet {
                     UrlPatterns.ProductDetailUrlPattern.PRODUCT_DETAIL_ERROR_URL,
                     request.getContextPath(),
                     productId,
-                    "Out of stock available",
+                    "Out of stock available ",
                     ex.getStockAvailable())
             );
         }

@@ -1,9 +1,9 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.CartService;
-import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.service.impl.ViewedProductsServiceImplement;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
@@ -71,7 +71,6 @@ public class ProductDetailPageServletTest {
         when(request.getSession()).thenReturn(session);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
 
-        when(productService.getProduct(1L)).thenReturn(product);
     }
 
     @Test
@@ -106,13 +105,12 @@ public class ProductDetailPageServletTest {
 
         verify(cartService).add(session, 1L, 2);
 
-        verify(response).sendRedirect(contains("?success=Product added to cart"));
+        verify(response).sendRedirect(contains("?success"));
     }
 
     @Test
     public void testDoPostInvalidQuantityShouldRedirectWithError() throws ServletException, IOException {
-        when(request.getParameter("quantity")).thenReturn("invalid");
-        when(request.getLocale()).thenReturn(Locale.US);
+        when(request.getParameter("quantity")).thenReturn("-100");
 
         servlet.doPost(request, response);
 

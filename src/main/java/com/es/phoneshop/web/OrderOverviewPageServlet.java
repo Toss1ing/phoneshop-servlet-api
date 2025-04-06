@@ -15,19 +15,19 @@ public class OrderOverviewPageServlet extends HttpServlet {
 
     private final static String ORDER_ATTR = "order";
 
-    protected OrderDao orderServiceDao;
+    protected OrderDao orderDao;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        orderServiceDao = OrderDaoImplement.getInstance();
+        orderDao = OrderDaoImplement.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String orderSecureId = request.getPathInfo().substring(1);
 
-        request.setAttribute(ORDER_ATTR, orderServiceDao.getOrderBySecureId(orderSecureId));
+        request.setAttribute(ORDER_ATTR, orderDao.getOrderBySecureId(orderSecureId));
         request.getRequestDispatcher(ORDER_OVERVIEW_JSP).forward(request, response);
 
     }

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class OrderServiceImplement implements OrderService {
 
-    private final OrderDao orderServiceDao = OrderDaoImplement.getInstance();
+    protected OrderDao orderServiceDao = OrderDaoImplement.getInstance();
     private static OrderServiceImplement instance;
 
     public static OrderServiceImplement getInstance() {
@@ -68,7 +68,7 @@ public class OrderServiceImplement implements OrderService {
                 .collect(Collectors.toList());
     }
 
-    private BigDecimal calculateDeliveryCost() {
+    protected BigDecimal calculateDeliveryCost() {
         return new BigDecimal("100");
     }
 }

@@ -146,7 +146,7 @@ public class CartServiceImplement implements CartService {
         }
     }
 
-    private void recalculateCart(Cart cart) {
+    protected void recalculateCart(Cart cart) {
         cart.setTotalPrice(BigDecimal.valueOf(cart.getItems().stream()
                 .mapToLong(item -> (long) item.getQuantity() * item.getProduct().getPrice().longValue())
                 .sum()));

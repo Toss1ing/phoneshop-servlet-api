@@ -65,7 +65,6 @@ public class ProductListAddCartItemServlet extends HttpServlet {
                     request.getContextPath(),
                     "Product added to cart")
             );
-            response.sendRedirect(request.getContextPath() + "/products?success=Product added to cart");
         } catch (OutOfStockException ex) {
             response.sendRedirect(String.format(
                     UrlPatterns.ProductListAddCartItemUrlPattern.PRODUCT_LIST_ADD_CART_ITEM_ERROR_URL,

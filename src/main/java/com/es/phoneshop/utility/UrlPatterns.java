@@ -13,7 +13,7 @@ public class UrlPatterns {
     }
 
     public static class ProductDetailUrlPattern {
-        public static final String PRODUCT_DETAIL_SUCCESS_URL = "%s/product/%s/success=%s";
+        public static final String PRODUCT_DETAIL_SUCCESS_URL = "%s/products/%s?success=%s";
         public static final String PRODUCT_DETAIL_ERROR_URL = "%s/products/%s?error=%s%s";
     }
 
