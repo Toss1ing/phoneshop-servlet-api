@@ -1,4 +1,4 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.servlets;
 
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.cart.Cart;
@@ -117,6 +117,6 @@ public class CartPageServletTest {
 
         servlet.doPost(request, response);
 
-        verify(response).sendRedirect(contains("/cart?success=Add products to the cart"));
+        verify(response).sendRedirect(contains("/cart?success=Cart updated successfully"));
     }
 }

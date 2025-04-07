@@ -1,4 +1,4 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.servlets;
 
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.service.CartService;
@@ -92,7 +92,7 @@ public class ProductListAddCartItemServletTest {
 
         servlet.doPost(request, response);
 
-        verify(response).sendRedirect(contains("/products?error=Out of stock available"));
+        verify(response).sendRedirect(contains("/products?error=Out of stock"));
     }
 
     @Test

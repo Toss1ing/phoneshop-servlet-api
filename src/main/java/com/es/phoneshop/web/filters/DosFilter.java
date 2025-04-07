@@ -1,4 +1,4 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.filters;
 
 import com.es.phoneshop.security.DosFilterService;
 import com.es.phoneshop.security.impl.DosFilterServiceImplement;

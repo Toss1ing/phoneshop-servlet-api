@@ -1,4 +1,4 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.servlets;
 
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.model.product.sort.SortField;
