@@ -13,6 +13,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.maven.shared.utils.StringUtils;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -41,6 +42,10 @@ public class CheckoutPageServlet extends HttpServlet {
     private static final String MSG_EMPTY_INPUT = "must not be empty.";
     private static final String MSG_LETTERS_REQUIRED = " must contain letters";
     private static final String MSG_DELIVERY_DATE_IN_PAST = "Delivery date must be after now";
+
+    private static final String DATE_PATTERN = "yyyy-MM-dd";
+    private static final String PHONE_PATTERN = "^\\+\\d[\\d\\s-]*$";
+    private static final String NAME_PATTERN = "^[A-Za-zА-Яа-яЁё\\s-]+$";
 
     protected OrderService orderService;
     protected CartService cartService;
@@ -124,7 +129,7 @@ public class CheckoutPageServlet extends HttpServlet {
 
     private LocalDate parseDate(String deliveryDateStr) {
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
             return LocalDate.parse(deliveryDateStr, formatter);
         } catch (DateTimeParseException e) {
             return null;
@@ -141,15 +146,14 @@ public class CheckoutPageServlet extends HttpServlet {
     }
 
     private void validateName(Map<String, String> errors, String name, String fieldName) {
-        if (name == null || name.isEmpty()) {
+        if (name == null || StringUtils.isEmpty(name)) {
             errors.put(fieldName, getReadableFieldName(fieldName) + MSG_EMPTY_INPUT);
             return;
         }
 
-        if (!name.matches("^[A-Za-zА-Яа-яЁё\\s-]+$")) {
+        if (!name.matches(NAME_PATTERN)) {
             errors.put(fieldName, getReadableFieldName(fieldName) + MSG_LETTERS_REQUIRED);
         }
-
     }
 
     private void validateDeliveryAddress(Map<String, String> errors, String deliveryAddress) {
@@ -163,7 +167,7 @@ public class CheckoutPageServlet extends HttpServlet {
     }
 
     private void validatePhone(Map<String, String> errors, String phone) {
-        if (!phone.matches("^\\+\\d[\\d\\s-]*$")) {
+        if (!phone.matches(PHONE_PATTERN)) {
             errors.put(PHONE_ATTR, MSG_INVALID_PHONE_NUMBER);
         }
     }
