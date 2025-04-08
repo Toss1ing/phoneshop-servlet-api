@@ -12,6 +12,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 public class ViewedProductsServiceImplement implements ViewedProductsService {
+
     private static ViewedProductsServiceImplement instance;
     private static final String SESSION_ATTRIBUTE = ViewedProductsServiceImplement.class.getName() + ".viewedProducts";
     private static final int MAX_VIEWED_PRODUCTS = 3;

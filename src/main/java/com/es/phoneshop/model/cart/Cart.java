@@ -10,7 +10,7 @@ public class Cart implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final List<CartItem> items;
+    private List<CartItem> items;
 
     private int totalQuantity;
 
@@ -42,8 +42,13 @@ public class Cart implements Serializable {
         this.totalPrice = totalPrice;
     }
 
+    public void setItems(List<CartItem> items) {
+        this.items = items;
+    }
+
     @Override
     public String toString() {
         return "cart[" + items + "]";
     }
+
 }

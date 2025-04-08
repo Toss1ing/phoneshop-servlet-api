@@ -1,14 +1,16 @@
 package com.es.phoneshop.service.impl;
 
+import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartItem;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.*;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
 
@@ -24,7 +26,7 @@ public class CartServiceTest {
     private HttpSession session;
 
     @Mock
-    private ProductService productService;
+    private ProductDao productService;
 
     @Mock
     private Product product;
@@ -235,6 +237,52 @@ public class CartServiceTest {
         cartService.delete(session, productId);
 
         assertTrue("Cart should be empty after deletion", cart.getItems().isEmpty());
+    }
+
+    @Test
+    public void testClearShouldEmptyCart() {
+        Cart cart = new Cart();
+        CartItem cartItem1 = new CartItem(product, 2);
+        CartItem cartItem2 = new CartItem(product, 3);
+        cart.getItems().add(cartItem1);
+        cart.getItems().add(cartItem2);
+        cart.setTotalPrice(BigDecimal.valueOf(500));
+        cart.setTotalQuantity(5);
+
+        when(session.getAttribute(SESSION_ATTRIBUTE)).thenReturn(cart);
+
+        cartService.clear(session);
+
+        assertTrue("Cart should be empty after clearing", cart.getItems().isEmpty());
+        assertEquals("Total price should be zero after clearing", BigDecimal.ZERO, cart.getTotalPrice());
+        assertEquals("Total quantity should be zero after clearing", 0, cart.getTotalQuantity());
+    }
+
+    @Test
+    public void testRecalculateCartShouldUpdateTotalPriceAndQuantity() {
+        Cart cart = new Cart();
+        CartItem cartItem1 = new CartItem(product, 2);
+        CartItem cartItem2 = new CartItem(product, 3);
+
+        when(product.getPrice()).thenReturn(BigDecimal.valueOf(100));
+
+        cart.getItems().add(cartItem1);
+        cart.getItems().add(cartItem2);
+
+        cartService.recalculateCart(cart);
+
+        assertEquals("Total price should be 500", BigDecimal.valueOf(500), cart.getTotalPrice());
+        assertEquals("Total quantity should be 5", 5, cart.getTotalQuantity());
+    }
+
+    @Test
+    public void testRecalculateCartShouldHandleEmptyCart() {
+        Cart cart = new Cart();
+
+        cartService.recalculateCart(cart);
+
+        assertEquals("Total price should be 0", BigDecimal.ZERO, cart.getTotalPrice());
+        assertEquals("Total quantity should be 0", 0, cart.getTotalQuantity());
     }
 
 }

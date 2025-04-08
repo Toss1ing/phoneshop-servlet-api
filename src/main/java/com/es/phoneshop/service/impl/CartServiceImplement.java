@@ -1,11 +1,12 @@
 package com.es.phoneshop.service.impl;
 
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.dao.impl.ProductDaoImplement;
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartItem;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.CartService;
-import com.es.phoneshop.service.ProductService;
 import com.es.phoneshop.utility.SessionLockManager;
 import jakarta.servlet.http.HttpSession;
 
@@ -16,7 +17,7 @@ public class CartServiceImplement implements CartService {
 
     private static final String SESSION_ATTRIBUTE = CartServiceImplement.class.getName() + ".cart";
     private static CartServiceImplement INSTANCE;
-    protected ProductService productService;
+    protected ProductDao productService;
 
     public static CartServiceImplement getInstance() {
         if (INSTANCE == null) {
@@ -26,7 +27,7 @@ public class CartServiceImplement implements CartService {
     }
 
     private CartServiceImplement() {
-        productService = ProductServiceImplement.getInstance();
+        productService = ProductDaoImplement.getInstance();
     }
 
     @Override
@@ -116,6 +117,22 @@ public class CartServiceImplement implements CartService {
         }
     }
 
+    @Override
+    public void clear(HttpSession session) {
+        Lock sessionLock = SessionLockManager.getSessionLock(session);
+        sessionLock.lock();
+
+        try {
+            Cart cart = getCart(session);
+
+            cart.getItems().clear();
+            cart.setTotalPrice(BigDecimal.ZERO);
+            cart.setTotalQuantity(0);
+        } finally {
+            sessionLock.unlock();
+        }
+    }
+
     private CartItem findCartItemByProduct(Cart cart, Product product) {
         return cart.getItems().stream()
                 .filter(item -> product.getId().equals(item.getProduct().getId()))
@@ -129,7 +146,7 @@ public class CartServiceImplement implements CartService {
         }
     }
 
-    private void recalculateCart(Cart cart) {
+    protected void recalculateCart(Cart cart) {
         cart.setTotalPrice(BigDecimal.valueOf(cart.getItems().stream()
                 .mapToLong(item -> (long) item.getQuantity() * item.getProduct().getPrice().longValue())
                 .sum()));
