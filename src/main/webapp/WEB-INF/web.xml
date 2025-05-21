@@ -93,6 +93,15 @@
     <servlet-name>orderOverview</servlet-name>
     <url-pattern>/order/overview/*</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>searchPage</servlet-name>
+    <servlet-class>com.es.phoneshop.web.servlets.SearchPageServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>searchPage</servlet-name>
+    <url-pattern>/search</url-pattern>
+  </servlet-mapping>
 
   <filter>
     <filter-name>dosFilter</filter-name>

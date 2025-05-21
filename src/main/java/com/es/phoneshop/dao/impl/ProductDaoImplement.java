@@ -5,10 +5,12 @@ import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.exception.NotFoundException;
 import com.es.phoneshop.exception.NullDataException;
 import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.product.search.SearchMode;
 import com.es.phoneshop.model.product.sort.SortField;
 import com.es.phoneshop.model.product.sort.SortOrder;
 import org.codehaus.plexus.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -72,6 +74,37 @@ public class ProductDaoImplement extends GenericDao<Product> implements ProductD
             reentrantReadWriteLock.readLock().unlock();
         }
     }
+
+    @Override
+    public List<Product> findProductsByParams(String description,
+                                              BigDecimal minPrice,
+                                              BigDecimal maxPrice,
+                                              SearchMode searchMode) {
+        reentrantReadWriteLock.readLock().lock();
+        try {
+            return entities.stream()
+                    .filter(p -> {
+                        if (description == null || description.isBlank()) {
+                            return true;
+                        }
+
+                        String[] words = description.toLowerCase().split("\\s+");
+                        String productDescription = p.getDescription().toLowerCase();
+
+                        return switch (searchMode) {
+                            case ALL -> Arrays.stream(words).allMatch(productDescription::contains);
+                            case ANY -> Arrays.stream(words).anyMatch(productDescription::contains);
+                            case NONE -> true;
+                        };
+                    })
+                    .filter(p -> minPrice == null || p.getPrice().compareTo(minPrice) >= 0)
+                    .filter(p -> maxPrice == null || p.getPrice().compareTo(maxPrice) <= 0)
+                    .collect(Collectors.toList());
+        } finally {
+            reentrantReadWriteLock.readLock().unlock();
+        }
+    }
+
 
     private Comparator<Product> getProductComparator(SortField sortField, SortOrder sortOrder) {
         Comparator<Product> comparator = switch (sortField) {
